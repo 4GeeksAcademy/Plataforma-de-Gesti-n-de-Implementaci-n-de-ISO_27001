@@ -44,9 +44,6 @@ class Role(db.Model):
             "name": self.name,
             "description": self.description,
         }
-    
-
-
 
 class TokenBlockedList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
