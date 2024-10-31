@@ -46,6 +46,8 @@ class Role(db.Model):
         }
     
 
+
+
 class TokenBlockedList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(120), unique=True, nullable=False)
