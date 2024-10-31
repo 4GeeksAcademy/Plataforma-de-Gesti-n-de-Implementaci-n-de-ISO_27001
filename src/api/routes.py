@@ -52,7 +52,7 @@ def user_modified():
         return jsonify({"msg": "Usuario modificado", "user": user.serialize()})
     return jsonify({"msg": "Usuario no encontrado"}), 404
 
-@app.route("/settings/email", methods=["POST"])
+@api.route("/settings/email", methods=["POST"])
 def update_email_settings():
     body = request.get_json()
 
