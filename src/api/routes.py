@@ -18,21 +18,28 @@ CORS(api)
 
 @api.route("/user", methods=["POST"])
 def user_create():
-    body = request.get_json()
+    try:
+        body = request.get_json()
+        print(body)
 
-    required_fields = ["usuario", "email", "password", "role"]
-    for field in required_fields:
-        if field not in body or body[field] is None:
-            return jsonify({"msg": f"Debe especificar un {field}"}), 400
+        required_fields = ["usuario", "email", "password", "role"]
+        for field in required_fields:
+            if field not in body or body[field] is None:
+                return jsonify({"msg": f"Debe especificar un {field}"}), 400
         
-    user = User.query.filter_by(email=body["email"]).first()
-    if user is not None:
-        return jsonify({"msg": "Usuario ya existe"}), 400
-    body["password"] = bcrypt.generate_password_hash(body["password"]).decode("utf-8")
-    user = User(usuario=body["usuario"], email=body["email"], password=body["password"], role=body["role"], is_active=True)
-    db.session.add(user)
-    db.session.commit()
-    return jsonify({"msg": "Usuario creado", "user": user.serialize()}), 201
+        user = User.query.filter_by(email=body["email"]).first()
+        if user is not None:
+            return jsonify({"msg": "Usuario ya existe"}), 400
+        
+        body["password"] = bcrypt.generate_password_hash(body["password"]).decode("utf-8")
+        user = User(usuario=body["usuario"], email=body["email"], password=body["password"], role=body["role"], is_active=True)
+        db.session.add(user)
+        db.session.commit()
+        
+        return jsonify({"msg": "Usuario creado", "user": user.serialize()}), 201
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 500
+
 
 @api.route("/user", methods=["PUT"])
 def user_modified():
