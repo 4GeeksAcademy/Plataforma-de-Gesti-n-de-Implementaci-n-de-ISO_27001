@@ -18,6 +18,13 @@ class User(db.Model):
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
     roles = db.relationship('Role', secondary=user_roles, back_populates='users')
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "is_active": self.is_active
+        }
 
 class Role(db.Model):
     __tablename__ = 'role'

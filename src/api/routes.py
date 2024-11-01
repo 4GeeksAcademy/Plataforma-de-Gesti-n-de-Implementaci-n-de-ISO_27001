@@ -22,24 +22,23 @@ def user_create():
         body = request.get_json()
         print(body)
 
-        required_fields = ["usuario", "email", "password", "role"]
+        required_fields = ["username", "email", "password"]
         for field in required_fields:
             if field not in body or body[field] is None:
                 return jsonify({"msg": f"Debe especificar un {field}"}), 400
-        
+
         user = User.query.filter_by(email=body["email"]).first()
         if user is not None:
             return jsonify({"msg": "Usuario ya existe"}), 400
-        
+
         body["password"] = bcrypt.generate_password_hash(body["password"]).decode("utf-8")
-        user = User(usuario=body["usuario"], email=body["email"], password=body["password"], role=body["role"], is_active=True)
+        user = User(username=body["username"], email=body["email"], password=body["password"], is_active=True)
         db.session.add(user)
         db.session.commit()
-        
-        return jsonify({"msg": "Usuario creado", "user": user.serialize()}), 201
+
+        return jsonify({"msg": "Usuario creado", "user": user.serialize()}), 200
     except Exception as e:
         return jsonify({"msg": str(e)}), 500
-
 
 @api.route("/user", methods=["PUT"])
 def user_modified():
@@ -58,6 +57,26 @@ def user_modified():
         db.session.commit()
         return jsonify({"msg": "Usuario modificado", "user": user.serialize()})
     return jsonify({"msg": "Usuario no encontrado"}), 404
+
+@api.route("/user", methods=["DELETE"])
+def user_delete():
+    try:
+        body = request.get_json()
+        email = body.get("email")
+
+        if not email:
+            return jsonify({"msg": "Debe especificar un email"}), 400
+
+        user = User.query.filter_by(email=email).first()
+        if user is None:
+            return jsonify({"msg": "Usuario no existe"}), 404
+
+        db.session.delete(user)
+        db.session.commit()
+
+        return jsonify({"msg": "Usuario eliminado"}), 200
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 500
 
 @api.route("/settings/email", methods=["POST"])
 def update_email_settings():
