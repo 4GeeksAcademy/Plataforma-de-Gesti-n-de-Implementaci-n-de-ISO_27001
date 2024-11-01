@@ -18,13 +18,16 @@ class User(db.Model):
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
     roles = db.relationship('Role', secondary=user_roles, back_populates='users')
 
+    def __repr__(self):
+        return f'<User {self.email}>'
+
     def serialize(self):
         return {
             "id": self.id,
-            "username": self.username,
             "email": self.email,
-            "is_active": self.is_active
+            "roles": [role.name for role in self.roles],  # Serializa los nombres de los roles
         }
+
 
 class Role(db.Model):
     __tablename__ = 'role'
@@ -33,6 +36,16 @@ class Role(db.Model):
     description = db.Column(db.String(255))
     users = db.relationship('User', secondary=user_roles, back_populates='roles')
 
+    def __repr__(self):
+        return f'<Role {self.name}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+        }
+    
 class TokenBlockedList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(120), unique=True, nullable=False)
