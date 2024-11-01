@@ -28,6 +28,7 @@ class User(db.Model):
             "roles": [role.name for role in self.roles],  # Serializa los nombres de los roles
         }
 
+
 class Role(db.Model):
     __tablename__ = 'role'
     id = db.Column(db.Integer, primary_key=True)
@@ -44,7 +45,7 @@ class Role(db.Model):
             "name": self.name,
             "description": self.description,
         }
-
+    
 class TokenBlockedList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(120), unique=True, nullable=False)
