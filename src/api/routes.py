@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, TokenBlockedList
+from api.models import db, User, Role, Project, TokenBlockedList
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, get_jwt_identity
@@ -95,3 +95,56 @@ def update_email_settings():
     app.config['MAIL_USE_SSL'] = body["MAIL_USE_SSL"]
 
     return jsonify({"msg": "Configuración de email actualizada correctamente"}), 200
+
+
+@api.route("/register/initial-admin", methods=["POST"])
+def register_initial_admin():
+    body = request.get_json()
+    
+    # Verificar campos requeridos.
+    required_fields = ["username", "email", "password", "project_name"]
+    for field in required_fields:
+        if field not in body or body[field] is None:
+            return jsonify({"msg": f"Debe especificar un {field}"}), 400
+    
+    # Verificar si el usuario ya existe
+    existing_user = User.query.filter_by(email=body["email"]).first()
+    if existing_user:
+        return jsonify({"msg": "El usuario ya existe"}), 400
+
+    # Verificar si el proyecto ya existe
+    existing_project = Project.query.filter_by(name=body["project_name"]).first()
+    if existing_project:
+        return jsonify({"msg": "El proyecto ya existe"}), 400
+    
+    body["password"] = bcrypt.generate_password_hash(body["password"]).decode("utf-8")
+    
+    # Crear el rol de administrador si no existe
+    admin_role = Role.query.filter_by(name='admin').first()
+    if not admin_role:
+        admin_role = Role(name='admin', description='Administrador con acceso completo')
+        db.session.add(admin_role)
+        db.session.commit()
+    
+    # Crear el nuevo usuario administrador
+    new_admin = User(
+        username=body["username"],
+        email=body["email"],
+        password=body["password"],
+        is_active=True
+    )
+    new_admin.roles.append(admin_role)
+    
+    # Crear el proyecto asociado al administrador
+    new_project = Project(
+        name=body["project_name"],
+        description=body.get("project_description", ""),
+        admin=new_admin
+    )
+    
+    # Guardar los cambios en la base de datos
+    db.session.add(new_admin)
+    db.session.add(new_project)
+    db.session.commit()
+    
+    return jsonify({"msg": "Administrador y proyecto creados", "user": new_admin.serialize(), "project": {"name": new_project.name, "description": new_project.description}}), 200

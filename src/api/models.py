@@ -45,7 +45,17 @@ class Role(db.Model):
             "name": self.name,
             "description": self.description,
         }
-    
+
+class Project(db.Model):
+    __tablename__ = 'project'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False, unique=True)
+    description = db.Column(db.String(255), nullable=True)
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    admin = db.relationship('User')
+
+User.project = db.relationship('Project')
+
 class TokenBlockedList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(120), unique=True, nullable=False)
