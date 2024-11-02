@@ -1,3 +1,41 @@
 /* 
     General Styles used on every website (Don't Repeat Yourself)
 */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap');
+
+:root {
+    --background-sand: #F8F1E5;
+    --navy: #1A2B40;
+    --navy-light: #55667d;
+    --orange: #D35400;
+
+    --fuente-texto: 'Open Sans', sans-serif;
+    --fuente-titulos: 'Montserrat', sans-serif;
+}
+
+* {
+    font-family: var(--fuente-texto);
+}
+
+h1 {
+    font-family: var(--fuente-titulos);
+    color: var(--navy);
+}
+
+nav, footer {
+    background-color: var(--navy-light);
+}
+
+.btn {
+    background-color: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: var(--orange); 
+    color: white;
+}
