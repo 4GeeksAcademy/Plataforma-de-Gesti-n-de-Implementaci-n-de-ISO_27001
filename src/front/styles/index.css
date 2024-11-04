@@ -26,6 +26,11 @@ nav, footer {
     background-color: var(--navy-light);
 }
 
+footer {
+    position: sticky;
+}
+
+
 .btn {
     background-color: var(--navy);
     color: white;
