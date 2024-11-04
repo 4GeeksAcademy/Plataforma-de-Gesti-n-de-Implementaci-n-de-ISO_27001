@@ -52,9 +52,9 @@ class Project(db.Model):
     name = db.Column(db.String(100), nullable=False, unique=True)
     description = db.Column(db.String(255), nullable=True)
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    admin = db.relationship('User')
+    admin = db.relationship('User', back_populates='project')
 
-User.project = db.relationship('Project')
+User.project = db.relationship('Project', back_populates='admin')
 
 class TokenBlockedList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
