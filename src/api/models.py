@@ -55,6 +55,7 @@ class Project(db.Model):
     status = db.Column(db.String(50), nullable=False, default='activo')  # Estado del proyecto
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+
     admin = db.relationship('User')
     def __repr__(self):
         return f'<Project {self.name}>'

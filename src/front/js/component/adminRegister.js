@@ -4,10 +4,10 @@ import "../../styles/adminRegister.css";
 
 export const AdminRegister = () => {
     return (
-        <div className="container">
+        <div className="container w-100">
             <div className="left-container">
                 <p className="text-center">
-                    <img class="left-container-logo" src={Logo} />
+                    <img className="left-container-logo" src={Logo} />
                 </p>
             </div>
             <div className="right-container">
@@ -34,8 +34,8 @@ export const AdminRegister = () => {
                         <label htmlFor="projectName" className="form-label">Project Name</label>
                         <input type="text" className="form-control" id="projectName" placeholder="Enter project name" required />
                     </div>
-                    <div class="form-floating">
-                        <textarea class="form-control" placeholder="Leave a description here" id="floatingTextarea"></textarea>
+                    <div className="form-floating">
+                        <textarea className="form-control" placeholder="Leave a description here" id="floatingTextarea"></textarea>
                         <label for="floatingTextarea">Enter project description</label>
                     </div> */}
                     <div className="row justify-content-center mt-3">
