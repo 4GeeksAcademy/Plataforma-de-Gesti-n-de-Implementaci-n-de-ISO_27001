@@ -18,7 +18,7 @@ export const AssignRoles = () => {
                         <input type="text" className="form-control" id="username" placeholder="Enter username" required />
                     </div>
                     <div className="mb-3">
-                        <label htmlFor="email" className="form-label">Email Address</label>
+                        <label htmlFor="email" className="form-label">Role</label>
                         <input type="email" className="form-control" id="email" placeholder="Enter email" required />
                     </div>
                 </form>
