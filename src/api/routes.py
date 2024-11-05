@@ -96,6 +96,27 @@ def update_email_settings():
 
     return jsonify({"msg": "Configuración de email actualizada correctamente"}), 200
 
+@api.route("/project", methods=["POST"])
+def project_create():
+    try:
+        body = request.get_json()
+
+        required_fields = ["projectName", "companyName", "projectDescription"]
+        for field in required_fields:
+            if field not in body or body[field] is None:
+                return jsonify({"msg": f"Debe especificar un {field}"}), 400
+
+        project = Project.query.filter_by(name=body["projectName"]).first()
+        if project is not None:
+            return jsonify({"msg": "Project ya existe"}), 400
+
+        db.session.add(project)
+        db.session.commit()
+
+        return jsonify({"msg": "Usuario creado", "user": project.serialize()}), 200
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 500
+
 
 @api.route("/register/initial-admin", methods=["POST"])
 def register_initial_admin():
