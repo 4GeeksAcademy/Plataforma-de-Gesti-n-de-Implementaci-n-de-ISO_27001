@@ -90,7 +90,7 @@ def user_delete():
         return jsonify({"msg": str(e)}), 500
 
 @api.route('/forgotpassword', methods=['POST'])
-def forgot_password():
+def forgot_password(): 
     try:
         body = request.get_json()
 
