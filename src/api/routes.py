@@ -2,6 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
+from datetime import timedelta
 from api.models import db, User, Role, Project, TokenBlockedList
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
@@ -13,6 +14,15 @@ api = Blueprint('api', __name__)
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
+
+app.config['MAIL_SERVER'] = 'mx.consultancysecurity.com'  # Cambia por tu servidor SMTP
+app.config['MAIL_PORT'] = 587  # Cambia según tu configuración
+app.config['MAIL_USERNAME'] = 'notificacion@consultancysecurity.com'
+app.config['MAIL_PASSWORD'] = 's^6rGE%@7^4S02t9%l@1XQ1kOXA^56'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_DEFAULT_SENDER'] = 'notificacion@consultancysecurity.com'
+
 mail = Mail(app)
 
 # Allow CORS requests to this API
@@ -79,7 +89,7 @@ def user_delete():
     except Exception as e:
         return jsonify({"msg": str(e)}), 500
 
-@api.route('/forgot-password', methods=['POST'])
+@api.route('/forgotpassword', methods=['POST'])
 def forgot_password():
     try:
         body = request.get_json()
@@ -89,16 +99,16 @@ def forgot_password():
         user = User.query.filter_by(email=body['email']).first()
         if user is None:
             return jsonify({"message": "El correo electrónico no está registrado"}), 404
-        reset_token = create_access_token(identity=user.id, fresh=False, expires_delta=False, additional_claims={"reset_password": True})
-        reset_url = f"http://localhost:5000/reset-password/{reset_token}"
-        msg = Message("Recuperación de contraseña", recipients=[user.email])
-        msg.body = f"Hola {user.name},\n\nHaz clic en el siguiente enlace para restablecer tu contraseña:\n{reset_url}\n\nEste enlace expira en 15 minutos."
+        reset_token = create_access_token(identity=user.id, additional_claims={"Type": "Password"}, expires_delta=timedelta(minutes=15))
+        reset_url = f"https://literate-waffle-rrqp9gxq9wp259jx-3001.app.github.dev/api/reset-password/{reset_token}"
+        msg = Message("CerBro - Recuperación de contraseña", recipients=[user.email])
+        msg.body = f"Hola {user.full_name},\n\nHaz clic en el siguiente enlace para restablecer tu contraseña:\n{reset_url}\n\nEste enlace expira en 15 minutos."
         mail.send(msg)
         return jsonify({"message": "Correo de recuperación enviado"}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500
     
-@api.route('/change-password', methods=['POST'])
+@api.route('/changepassword', methods=['PATCH'])
 @jwt_required()
 def change_password():
     try:

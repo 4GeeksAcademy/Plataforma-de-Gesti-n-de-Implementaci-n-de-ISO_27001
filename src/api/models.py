@@ -9,7 +9,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
-    username = db.Column(db.String(120), nullable=True)
+    full_name = db.Column(db.String(120), nullable=True)
     registered_on = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False) 
@@ -22,8 +22,8 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
-            "username": self.username
-            # "role": self.role.name,
+            "full_name": self.full_name,
+            #"role": self.role.name,
         }
 
 class Role(db.Model):
