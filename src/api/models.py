@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -11,6 +12,7 @@ class User(db.Model):
     full_name = db.Column(db.String(120), nullable=True)
     registered_on = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
+
     
     # Rol global (opcional): solo se asignará para los administradores de plataforma
     global_role_id = db.Column(db.Integer, db.ForeignKey('role.id'))  # Administrador de plataforma
@@ -27,10 +29,11 @@ class User(db.Model):
             "id": self.id,
             "email": self.email,
             "full_name": self.full_name,
+
             "is_active": self.is_active,
             "global_role": self.global_role.name if self.global_role else None
-        }
 
+        }
 
 class Role(db.Model):
     __tablename__ = 'role'
@@ -42,6 +45,7 @@ class Role(db.Model):
     users_with_global_role = db.relationship('User', foreign_keys='User.global_role_id')
     # Relación con roles de proyectos específicos
     project_roles = db.relationship('UserProjectRole', back_populates='role')
+
 
     def __repr__(self):
         return f'<Role {self.name}>'
@@ -69,6 +73,7 @@ class Project(db.Model):
     # Relación con los roles de usuarios en el proyecto
     user_project_roles = db.relationship('UserProjectRole', back_populates='project')
     
+
     def __repr__(self):
         return f'<Project {self.name}>'
 
@@ -77,6 +82,7 @@ class Project(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
+
             "company_name": self.company_name,
             "start_date": self.start_date,
             "end_date": self.end_date,
@@ -105,6 +111,12 @@ class UserProjectRole(db.Model):
             "role": self.role.name
         }
 
+
 class TokenBlockedList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(120), unique=True, nullable=False)
+    type = db.Column(db.Enum("Access", "Password", name="token_type_enum"), nullable=False)
+
+    def __init__(self, jti, type):
+        self.jti = jti
+        self.type = type
