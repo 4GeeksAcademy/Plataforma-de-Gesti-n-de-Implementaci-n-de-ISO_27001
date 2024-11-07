@@ -16,29 +16,6 @@ bcrypt = Bcrypt(app)
 # Allow CORS requests to this API
 CORS(api)
 
-@api.route("/user", methods=["POST"])
-def user_create():
-    try:
-        body = request.get_json()
-        print(body)
-
-        required_fields = ["username", "email", "password"]
-        for field in required_fields:
-            if field not in body or body[field] is None:
-                return jsonify({"msg": f"Debe especificar un {field}"}), 400
-
-        user = User.query.filter_by(email=body["email"]).first()
-        if user is not None:
-            return jsonify({"msg": "Usuario ya existe"}), 400
-
-        body["password"] = bcrypt.generate_password_hash(body["password"]).decode("utf-8")
-        user = User(username=body["username"], email=body["email"], password=body["password"], is_active=True)
-        db.session.add(user)
-        db.session.commit()
-
-        return jsonify({"msg": "Usuario creado", "user": user.serialize()}), 200
-    except Exception as e:
-        return jsonify({"msg": str(e)}), 500
 
 @api.route("/user", methods=["PUT"])
 def user_modified():
