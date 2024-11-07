@@ -22,7 +22,7 @@ def user_create():
         body = request.get_json()
         print(body)
 
-        required_fields = ["username", "email", "password"]
+        required_fields = ["full_name", "email", "password"]
         for field in required_fields:
             if field not in body or body[field] is None:
                 return jsonify({"msg": f"Debe especificar un {field}"}), 400
@@ -32,7 +32,7 @@ def user_create():
             return jsonify({"msg": "Usuario ya existe"}), 400
 
         body["password"] = bcrypt.generate_password_hash(body["password"]).decode("utf-8")
-        user = User(username=body["username"], email=body["email"], password=body["password"], is_active=True)
+        user = User(full_name=body["full_name"], email=body["email"], password=body["password"], is_active=True)
         db.session.add(user)
         db.session.commit()
 
@@ -102,7 +102,7 @@ def register_initial_admin():
     body = request.get_json()
     
     # Verificar campos requeridos.
-    required_fields = ["username", "email", "password", "project_name"]
+    required_fields = ["full_name", "email", "password", "project_name"]
     for field in required_fields:
         if field not in body or body[field] is None:
             return jsonify({"msg": f"Debe especificar un {field}"}), 400
@@ -128,7 +128,7 @@ def register_initial_admin():
     
     # Crear el nuevo usuario administrador
     new_admin = User(
-        username=body["username"],
+        full_name=body["full_name"],
         email=body["email"],
         password=body["password"],
         is_active=True
