@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Context } from "../store/appContext";
 import Logo from "../../img/white-logo.png";
 import "../../styles/adminRegister.css";
 

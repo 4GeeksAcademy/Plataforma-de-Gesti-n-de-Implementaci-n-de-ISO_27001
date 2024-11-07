@@ -131,10 +131,10 @@ def register_initial_admin():
         full_name=body["full_name"],
         email=body["email"],
         password=body["password"],
-        is_active=True
+        is_active=True,
+        role=admin_role 
     )
-    new_admin.roles.append(admin_role)
-    
+
     # Crear el proyecto asociado al administrador
     new_project = Project(
         name=body["project_name"],

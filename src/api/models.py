@@ -9,7 +9,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
-    username = db.Column(db.String(120), nullable=True)
+    full_name = db.Column(db.String(120), nullable=True)
     registered_on = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False) 
@@ -22,7 +22,7 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
-            "username": self.username
+            "full_name": self.full_name
             # "role": self.role.name,
         }
 
@@ -48,7 +48,7 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     description = db.Column(db.String(255), nullable=True)
-    company_name = db.Column(db.String(100), nullable=False)
+    company_name = db.Column(db.String(100), nullable=False, default='Default Company')
     start_date = db.Column(db.DateTime, nullable=True)  # Fecha de inicio
     end_date = db.Column(db.DateTime, nullable=True)    # Fecha de fin
     status = db.Column(db.String(50), nullable=False, default='activo')  # Estado del proyecto
