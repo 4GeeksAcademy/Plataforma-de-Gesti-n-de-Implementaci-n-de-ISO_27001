@@ -3,7 +3,7 @@ import { Context } from "../store/appContext";
 import Logo from "../../img/white-logo.png";
 import "../../styles/adminRegister.css";
 
-export const AssignRoles = () => {
+export const ManageUsers = () => {
     return (
         <div className="container">
             <div className="left-container">
@@ -12,7 +12,7 @@ export const AssignRoles = () => {
                 </p>
             </div>
             <div className="right-container">
-                <h1 className="text-center">Assign Roles</h1>
+                <h1 className="text-center">Manage Users</h1>
                 <form>
                     <div className="mb-3">
                         <label htmlFor="username" className="form-label">Username</label>
