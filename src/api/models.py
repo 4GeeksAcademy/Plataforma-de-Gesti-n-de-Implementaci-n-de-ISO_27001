@@ -22,6 +22,8 @@ class User(db.Model):
         return {
             "id": self.id,
             "email": self.email,
+            "full_name": self.full_name,
+            #"role": self.role.name,
             "full_name": self.full_name
             # "role": self.role.name,
         }
@@ -52,10 +54,7 @@ class Project(db.Model):
     start_date = db.Column(db.DateTime, nullable=True)  # Fecha de inicio
     end_date = db.Column(db.DateTime, nullable=True)    # Fecha de fin
     status = db.Column(db.String(50), nullable=False, default='activo')  # Estado del proyecto
-    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-
-    admin = db.relationship('User')
     def __repr__(self):
         return f'<Project {self.name}>'
 
@@ -74,3 +73,8 @@ class Project(db.Model):
 class TokenBlockedList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(120), unique=True, nullable=False)
+    type = db.Column(db.Enum("Access", "Password", name="token_type_enum"), nullable=False)
+
+    def __init__(self, jti, type):
+        self.jti = jti
+        self.type = type
