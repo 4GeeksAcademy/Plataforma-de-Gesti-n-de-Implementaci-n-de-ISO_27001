@@ -7,7 +7,7 @@ export const Login = () => {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        // Lógica de autenticación a integrar con el backend
+        // Lógica de autenticación a integrar con el backend para agregar aqui: 
 
         
         console.log("Iniciar sesión con:", { email, password });
