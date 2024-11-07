@@ -33,6 +33,7 @@ mail = Mail(app)
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET")
 jwt = JWTManager(app)
 
+
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
     token_blocked=TokenBlockedList.query.filter_by(jti=jwt_payload["jti"]).first()
