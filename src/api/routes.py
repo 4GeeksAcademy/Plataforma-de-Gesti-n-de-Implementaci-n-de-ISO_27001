@@ -4,7 +4,6 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 from flask import Flask, request, jsonify, url_for, Blueprint
 
 from api.models import db, User, Role, Project, UserProjectRole, TokenBlockedList
-=======
 from datetime import timedelta
 
 from api.utils import generate_sitemap, APIException
@@ -93,18 +92,18 @@ def forgot_password():
         body = request.get_json()
 
         if 'email' not in body:
-            return jsonify({"message": "Se requiere un correo electrónico"}), 400
+            return jsonify({"msg": "Se requiere un correo electrónico"}), 400
         user = User.query.filter_by(email=body['email']).first()
         if user is None:
-            return jsonify({"message": "El correo electrónico no está registrado"}), 404
+            return jsonify({"msg": "El correo electrónico no está registrado"}), 404
         reset_token = create_access_token(identity=user.id, additional_claims={"Type": "Password"}, expires_delta=timedelta(minutes=15))
         reset_url = f"https://literate-waffle-rrqp9gxq9wp259jx-3001.app.github.dev/api/reset-password/{reset_token}"
-        msg = Message("CerBro - Recuperación de contraseña", recipients=[user.email])
+        msg = msg("CerBro - Recuperación de contraseña", recipients=[user.email])
         msg.body = f"Hola {user.full_name},\n\nHaz clic en el siguiente enlace para restablecer tu contraseña:\n{reset_url}\n\nEste enlace expira en 15 minutos."
         mail.send(msg)
-        return jsonify({"message": "Correo de recuperación enviado"}), 200
+        return jsonify({"msg": "Correo de recuperación enviado"}), 200
     except Exception as e:
-        return jsonify({"message": str(e)}), 500
+        return jsonify({"msg": str(e)}), 500
     
 @api.route('/changepassword', methods=['PATCH'])
 @jwt_required()
@@ -112,22 +111,22 @@ def change_password():
     try:
         body = request.get_json()
         if 'current_password' not in body or 'new_password' not in body:
-            return jsonify({"message": "Se requiere la contraseña actual y la nueva contraseña"}), 400
+            return jsonify({"msg": "Se requiere la contraseña actual y la nueva contraseña"}), 400
         user_id = get_jwt_identity()
         
         user = User.query.get_or_404(user_id)
         if not bcrypt.check_password_hash(user.password, body['current_password']):
-            return jsonify({"message": "Contraseña actual incorrecta"}), 401
+            return jsonify({"msg": "Contraseña actual incorrecta"}), 401
         if len(body['new_password']) < 6:
-            return jsonify({"message": "La nueva contraseña debe tener al menos 6 caracteres"}), 400
+            return jsonify({"msg": "La nueva contraseña debe tener al menos 6 caracteres"}), 400
         
         hashed_password = bcrypt.generate_password_hash(body['new_password']).decode('utf-8')
         user.password = hashed_password
         db.session.commit()
         
-        return jsonify({"message": "Contraseña actualizada exitosamente"}), 200
+        return jsonify({"msg": "Contraseña actualizada exitosamente"}), 200
     except Exception as e:
-        return jsonify({"message": str(e)}), 500
+        return jsonify({"msg": str(e)}), 500
 
 @api.route("/settings/email", methods=["POST"])
 def update_email_settings():
@@ -183,25 +182,17 @@ def project_create():
 @api.route("/register", methods=["POST"])
 def register_user():
     body = request.get_json()
-
-    
-
     required_fields = ["email", "password", "full_name"]
 
     for field in required_fields:
         if field not in body or not body[field]:
             return jsonify({"msg": f"Falta el campo: {field}"}), 400
-
     
     existing_user = User.query.filter_by(email=body["email"]).first()
     if existing_user:
         return jsonify({"msg": "El usuario ya existe"}), 400
 
-    
     hashed_password = bcrypt.generate_password_hash(body["password"]).decode("utf-8")
-
-    
-
     new_user = User(
 
         email=body["email"],
@@ -242,15 +233,15 @@ def user_login():
     body = request.get_json()
 
     if body.get("email") is None:
-        return jsonify({"message": "You must enter an email"}), 400
+        return jsonify({"msg": "You must enter an email"}), 400
     if body.get("password") is None:
-        return jsonify({"message": "You must enter a password"}), 400
+        return jsonify({"msg": "You must enter a password"}), 400
 
     user = User.query.filter_by(email=body["email"]).first()
     if user is None:
-        return jsonify({"message": "User not found"}), 400
+        return jsonify({"msg": "User not found"}), 400
     if user.role.name is None:
-        return jsonify({"message": "Role not found"}), 400
+        return jsonify({"msg": "Role not found"}), 400
 
     valid_password = bcrypt.check_password_hash(user.password, body["password"])
     if not valid_password:
@@ -266,7 +257,7 @@ def user_info():
     token_info = get_jwt()
     user=User.query.get(user_id)
     if user is None:
-        return jsonify({"message": "User not found"}), 404
+        return jsonify({"msg": "User not found"}), 404
     return jsonify({"userinfo": user.serialize(), "role": token_info["role"]}), 200
 
 @api.route("/logout", methods=["POST"])
@@ -276,4 +267,55 @@ def user_logout():
     token_blocked=TokenBlockedList(jti=token_data["jti"])
     db.session.add(token_blocked)
     db.session.commit()
-    return jsonify({"message": "you are logged out"}), 200
+    return jsonify({"msg": "you are logged out"}), 200
+
+@api.route("/manage/users", methods=["GET"])
+def get_all_users():
+    all_users = User.query.all()
+    if not all_users:
+        return jsonify({"error": "Users not found"}), 404
+    all_users_serialize = []
+    for user in all_users:
+        all_users_serialize.append(user.serialize())
+    return jsonify(all_users_serialize), 200
+
+@api.route("/all/roles", methods=["GET"])
+def get_all_roles():
+    all_roles = Role.query.all()
+    if not all_roles:
+        return jsonify({"error": "Roles not found"}), 404
+    all_roles_serialize = []
+    for role in all_roles:
+        all_roles_serialize.append(role.serialize())
+    return jsonify(all_roles_serialize), 200
+
+@api.route("/change/user/role", methods=["PATCH"])
+def modify_user_role():
+    body = request.get_json()
+
+    # Buscar el usuario por email
+    user = User.query.filter_by(email=body["email"]).first()
+    if user is None:
+        return jsonify({"msg": "User not found"}), 404
+
+    # Si el rol es None, eliminar el rol actual del usuario
+    if body.get("global_role") is None:
+        user.global_role = None
+        db.session.commit()
+        return jsonify({"msg": "Rol de usuario eliminado", "user": user.serialize()}), 200
+
+    # Buscar el rol por nombre
+    role_to_assign = Role.query.filter_by(name=body["global_role"]).first()
+    if not role_to_assign:
+        return jsonify({"msg": "Role not found"}), 404
+
+    # Restricción para no permitir el rol de "Administrador de Plataforma"
+    if role_to_assign.name == "Administrador de Plataforma":
+        return jsonify({"msg": "No se puede asignar el rol de Administrador de Plataforma"}), 403
+
+    # Asignar el nuevo rol al usuario
+    user.global_role = role_to_assign
+    db.session.commit()
+
+    return jsonify({"msg": "Rol de usuario modificado", "user": user.serialize()}), 200
+

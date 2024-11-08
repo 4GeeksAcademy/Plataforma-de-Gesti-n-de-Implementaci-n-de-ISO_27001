@@ -1,10 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../../styles/index.css";
 import WhiteLogo from "../../img/white-logo.png";
 import ConsultancySecurityText from "../../img/white-text.png";
 import { Link } from "react-router-dom";
 
 export const Navbar = () => {
+	const navigate = useNavigate();
+	const handleRegisterAccount = () => {
+        navigate("/register");
+    };
 	return (
 		<nav className="navbar">
 			<div className="container-fluid d-flex align-items-center">
@@ -13,7 +18,7 @@ export const Navbar = () => {
 					<img src={ConsultancySecurityText} alt="Consultancy Security" width="120" className="d-inline-block align-text-top ms-2"/>
 				</a>
 				<div className="d-flex align-items-end">
-					<button type="button" className="btn">Register</button>
+					<button type="button" className="btn" onClick={handleRegisterAccount}>Register</button>
 					<button type="button" className="btn ms-2">Login</button>
 				</div>
 			</div>

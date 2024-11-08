@@ -1,28 +1,30 @@
 import React, { Component, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import Logo from "../../img/white-logo.png";
 import "../../styles/adminRegister.css";
 
-export const AdminRegister = () => {
+export const Register = () => {
 
-    const {store, actions} = useContext(Context)
+    const {store, actions} = useContext(Context);
+    const navigate = useNavigate();
     async function submitForm(e) {
         e.preventDefault()
         const formData = new FormData(e.target)
         const full_name = formData.get("full_name")
         const email = formData.get("email")
         const password = formData.get("password")
-        const project_name = formData.get("project_name")
-        if (!full_name || !email || !password || !project_name) {
+        if (!full_name || !email || !password) {
             console.log("Incomplete data")
             return 
         }
-        let success = await actions.registerInitialAdmin(full_name, email, password, project_name)
+        let success = await actions.registerAccount(full_name, email, password)
         if(success) {
-            console.log("Admin registered")
+            console.log("Account registered succesfully")
+            navigate("/login");
         }
         else {
-            console.log("Error while registering admin")
+            console.log("Error registering account")
         }
     }
     return (
@@ -46,10 +48,6 @@ export const AdminRegister = () => {
                     <div className="mb-3">
                         <label htmlFor="password" className="form-label">Password</label>
                         <input type="password" className="form-control" name="password" placeholder="Enter password" required />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="project_name" className="form-label">Project Name</label>
-                        <input type="string" className="form-control" name="project_name" placeholder="Enter project name" required />
                     </div>
                     <div className="row justify-content-center mt-3">
                         <div className="col-auto">
