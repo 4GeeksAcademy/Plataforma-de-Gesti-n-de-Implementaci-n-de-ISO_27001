@@ -62,7 +62,7 @@ class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False, unique=True)
     description = db.Column(db.String(255), nullable=True)
-    company_name = db.Column(db.String(100), nullable=False)
+    company_name = db.Column(db.String(100), nullable=False, default='Default Company')
     start_date = db.Column(db.DateTime, nullable=True)  # Fecha de inicio
     end_date = db.Column(db.DateTime, nullable=True)    # Fecha de fin
     status = db.Column(db.String(50), nullable=False, default='activo')  # Estado del proyecto
