@@ -10,6 +10,9 @@ export const Navbar = () => {
 	const handleRegisterAccount = () => {
         navigate("/register");
     };
+	const handleLogin = () => {
+        navigate("/login");
+    };
 	return (
 		<nav className="navbar">
 			<div className="container-fluid d-flex align-items-center">
@@ -19,7 +22,7 @@ export const Navbar = () => {
 				</a>
 				<div className="d-flex align-items-end">
 					<button type="button" className="btn" onClick={handleRegisterAccount}>Register</button>
-					<button type="button" className="btn ms-2">Login</button>
+					<button type="button" className="btn ms-2" onClick={handleLogin}>Login</button>
 				</div>
 			</div>
 		</nav>

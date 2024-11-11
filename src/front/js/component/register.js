@@ -21,7 +21,7 @@ export const Register = () => {
         let success = await actions.registerAccount(full_name, email, password)
         if(success) {
             console.log("Account registered succesfully")
-            navigate("/login");
+            navigate("/projectlist");
         }
         else {
             console.log("Error registering account")
