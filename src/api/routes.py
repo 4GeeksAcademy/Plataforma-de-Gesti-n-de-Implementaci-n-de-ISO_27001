@@ -163,11 +163,13 @@ def project_create():
 
         # Obtener el ID del admin desde el token JWT
         #admin_id = get_jwt_identity()  # Esto devuelve el `admin_id` del payload del token
+        user_id = get_jwt_identity()
 
         new_project = Project(
             name=body["projectName"],
             description=body.get("projectDescription", ""),
-            company_name=body["companyName"]
+            company_name=body["companyName"],
+            project_leader_id=user_id
         )
 
         db.session.add(new_project)
