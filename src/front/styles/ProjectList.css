@@ -44,10 +44,13 @@
   height: 50px;
   width: 150px;
   margin: auto;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
 }
 .delete-all-button:hover {
   background-color: #b94300;
+  transform: scale(1.05);
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
 }
 .project-list {
   display: flex;
@@ -95,4 +98,32 @@
 }
 .delete-button:hover {
   background-color: #b94300;
+}
+.floating-add-button {
+  
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #6381a5, #0D1B2A); /* Azul vibrante */
+  color: white;
+  border: none;
+  border-radius: 10%;
+  width: 150px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  cursor: pointer;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.floating-add-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+.floating-add-button:active {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 }

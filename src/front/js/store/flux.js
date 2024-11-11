@@ -183,6 +183,36 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				return true;
 			},
+
+			createProject: async (projectName, companyName, projectDescription) => {
+				const store = getStore();
+				
+				try {
+					const response = await fetch(`${backendURL}/project`, {
+						method: "POST",
+						headers: {
+							"Authorization": `Bearer ${store.accessToken}`,
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ projectName, companyName, projectDescription })
+					});
+			
+					if (!response.ok) {
+						const errorData = await response.json();
+						console.log("Error:", errorData);
+						return false;
+					}
+			
+					const data = await response.json();
+					// Actualizar la lista de proyectos en el store (opcional)
+					await getActions().getUserProjects();
+					return true;
+			
+				} catch (error) {
+					console.error("Error al crear el proyecto:", error);
+					return false;
+				}
+			},
 			
 		}
 	};
