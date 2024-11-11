@@ -1,0 +1,98 @@
+/* Fondo general del contenedor */
+/* ProjectList.css */
+
+.container {
+  background-color: #F8F1E5;
+  color: #1A2B40;
+  padding: 40px 20px;
+  font-family: "Open Sans", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.user-name {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #1A2B40;
+  margin-bottom: 10px;
+}
+.title {
+  font-family: "Montserrat", sans-serif;
+  color: #D35400;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.main-content {
+  display: flex;
+  gap: 20px;
+  max-width: 1000px;
+  width: 100%;
+  margin: 10px 40px;
+}
+
+.delete-all-button {
+  background-color: #D35400;
+  color: #FFF;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: block;
+  text-align: center;
+  font-size: 1.1em;
+  font-family: "Montserrat", sans-serif;
+  height: 50px;
+  width: 150px;
+  margin: auto;
+  transition: background-color 0.3s ease;
+}
+.delete-all-button:hover {
+  background-color: #b94300;
+}
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex: 1;
+}
+
+.project-item {
+  background-color: #FFF;
+  padding: 15px;
+  border: 1px solid #55667d;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+.project-item:hover {
+  transform: translateY(-3px);
+}
+.project-info {
+  cursor: pointer;
+}
+.project-info h2 {
+  font-family: "Montserrat", sans-serif;
+  color: #1A2B40;
+  margin: 0;
+  font-size: 1.5em;
+}
+.project-info p {
+  color: #55667d;
+  margin: 5px 0;
+}
+.delete-button {
+  background-color: #D35400;
+  color: #FFF;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease;
+}
+.delete-button:hover {
+  background-color: #b94300;
+}

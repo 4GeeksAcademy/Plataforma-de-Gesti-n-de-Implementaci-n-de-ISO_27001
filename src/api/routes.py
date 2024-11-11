@@ -238,17 +238,19 @@ def user_login():
         return jsonify({"msg": "You must enter a password"}), 400
 
     user = User.query.filter_by(email=body["email"]).first()
+    print (user)
     if user is None:
         return jsonify({"msg": "User not found"}), 400
-    if user.role.name is None:
-        return jsonify({"msg": "Role not found"}), 400
+    #if not user.role or not user.role.name:
+       # return jsonify({"msg": "Role not found"}), 400
 
     valid_password = bcrypt.check_password_hash(user.password, body["password"])
     if not valid_password:
         return jsonify({"msg": "Password not valid"}), 401
-    token = create_access_token(identity=user.id, additional_claims={"role": user.role.name})
+    token = create_access_token(identity=user.id,)# additional_claims={"role": user.role.name})
 
-    return jsonify({"token": token}), 200
+    return jsonify({"token": token,
+                    "full_name": user.full_name}), 200
 
 @api.route("/userinfo", methods=["GET"])
 @jwt_required()
@@ -319,3 +321,56 @@ def modify_user_role():
 
     return jsonify({"msg": "Rol de usuario modificado", "user": user.serialize()}), 200
 
+@api.route("/projects", methods=["GET"])
+@jwt_required()
+def get_user_projects():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+    
+    if not user:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+
+    user_projects = Project.query.filter(
+        (Project.project_leader_id == user_id) |
+        (Project.user_project_roles.any(UserProjectRole.user_id == user_id))
+    ).all()
+    
+    return jsonify([project.serialize() for project in user_projects]), 200
+
+
+@api.route("/projects/<int:project_id>", methods=["DELETE"])
+@jwt_required()
+def delete_project(project_id):
+    user_id = get_jwt_identity()
+    project = Project.query.get(project_id)
+    
+    if not project:
+        return jsonify({"msg": "Proyecto no encontrado"}), 404
+    
+    if project.project_leader_id != user_id:
+        return jsonify({"msg": "No tienes permisos para eliminar este proyecto"}), 403
+    
+    db.session.delete(project)
+    db.session.commit()
+    
+    return jsonify({"msg": "Proyecto eliminado exitosamente"}), 200
+
+@api.route("/projects/<int:project_id>", methods=["GET"])
+@jwt_required()
+def get_project(project_id):
+    user_id = get_jwt_identity()
+    project = Project.query.get(project_id)
+    
+    if not project:
+        return jsonify({"msg": "Proyecto no encontrado"}), 404
+    
+    # Verificar si el usuario es parte del proyecto o es el líder del proyecto
+    is_user_in_project = (
+        project.project_leader_id == user_id or 
+        any(role.user_id == user_id for role in project.user_project_roles)
+    )
+    
+    if not is_user_in_project:
+        return jsonify({"msg": "No tienes acceso a este proyecto"}), 403
+    
+    return jsonify(project.serialize()), 200
