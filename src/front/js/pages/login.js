@@ -1,22 +1,35 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { Context } from "../store/appContext";
+import { useNavigate } from "react-router-dom";
 import "../../styles/login.css";
 
 export const Login = () => {
+    const { actions } = useContext(Context);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState(""); // Para manejar errores
+    const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         // Lógica de autenticación a integrar con el backend para agregar aqui: 
         
-        
-        console.log("Iniciar sesión con:", { email, password });
+        const success = await actions.loginAccount(email, password);
+
+        if (success) {
+            navigate("/projectlist"); // Redirige a la lista de proyectos si el login es exitoso
+            console.log("Iniciar sesión con:", { email, password });
+        } else {
+            setErrorMessage("Error al iniciar sesión. Verifica tus credenciales.");
+        }
+
     };
 
     return (
         <div className="login-container">
             <div className="login-form">
                 <h1>Iniciar Sesión</h1>
+                {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Mostrar errores */}
                 <form onSubmit={handleLogin}>
                     <div className="input-group">
                         <i className="fas fa-envelope"></i>
