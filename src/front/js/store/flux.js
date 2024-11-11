@@ -36,7 +36,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error: " + response.status)
 					return false
 				}
-				return true
+
+				 // Intentar hacer login automático después del registro
+				const loginSuccess = await getActions().loginAccount(email, password);
+				return loginSuccess;
 			},
 			
 			loginAccount: async (email, password) => {

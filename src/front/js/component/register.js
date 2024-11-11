@@ -24,7 +24,7 @@ export const Register = () => {
             navigate("/projectlist");
         }
         else {
-            console.log("Error registering account")
+            console.log("Error registering account or loggin in")
         }
     }
     return (
