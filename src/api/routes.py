@@ -195,13 +195,13 @@ def register_user():
         return jsonify({"msg": "El usuario ya existe"}), 400
 
     hashed_password = bcrypt.generate_password_hash(body["password"]).decode("utf-8")
-    new_user = User(
 
+    new_user = User(
         email=body["email"],
         password=hashed_password,
         full_name=body["full_name"],
         is_active=True,
-        global_role=None  # No se asigna un rol global
+        
     )
 
     # Si es el primer usuario, asignarle rol de Administrador de Plataforma

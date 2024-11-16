@@ -14,12 +14,12 @@ class User(db.Model):
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
 
     
-    # Rol global (opcional): solo se asignará para los administradores de plataforma
-    global_role_id = db.Column(db.Integer, db.ForeignKey('role.id'))  # Administrador de plataforma
-    global_role = db.relationship('Role', foreign_keys=[global_role_id])
-    
-    # Relación con roles de proyectos específicos
+    # Relación con RoleUser (tabla intersección)
+    user_roles = db.relationship('RoleUser', back_populates='user')
+
+    # Relación con UserProjectRole (para roles en proyectos)
     project_roles = db.relationship('UserProjectRole', back_populates='user')
+
 
     def __repr__(self):
         return f'<User {self.email}>'
@@ -31,8 +31,8 @@ class User(db.Model):
             "full_name": self.full_name,
 
             "is_active": self.is_active,
-            "global_role": self.global_role.name if self.global_role else None
-
+            "roles": [role_user.role.serialize() for role_user in self.user_roles],
+            "registered_on": self.registered_on
         }
 
 class Role(db.Model):
@@ -41,10 +41,8 @@ class Role(db.Model):
     name = db.Column(db.String(50), unique=True, nullable=False)
     description = db.Column(db.String(255))
     
-    # Relación para roles globales (como Administrador de Plataforma)
-    users_with_global_role = db.relationship('User', foreign_keys='User.global_role_id')
-    # Relación con roles de proyectos específicos
-    project_roles = db.relationship('UserProjectRole', back_populates='role')
+    # Relación con RoleUser (tabla intersección)
+    role_users = db.relationship('RoleUser', back_populates='role')
 
 
     def __repr__(self):
@@ -56,6 +54,33 @@ class Role(db.Model):
             "name": self.name,
             "description": self.description,
         }
+
+class RoleUser(db.Model):
+    """
+    Tabla de intersección que representa la relación entre User y Role.
+    Puede manejar roles globales o roles específicos.
+    """
+    __tablename__ = 'role_user'
+    id = db.Column(db.Integer, primary_key=True)
+    role_id = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    is_global = db.Column(db.Boolean, default=False)  # Indica si es un rol global
+
+    # Relación con Role
+    role = db.relationship('Role', back_populates='role_users')
+    # Relación con User
+    user = db.relationship('User', back_populates='user_roles')
+
+    def __repr__(self):
+        return f"<RoleUser role_id={self.role_id} user_id={self.user_id} is_global={self.is_global}>"
+
+    def serialize(self):
+        return {
+            "role_id": self.role_id,
+            "user_id": self.user_id,
+            "is_global": self.is_global
+        }
+
 
 class Project(db.Model):
     __tablename__ = 'project'
@@ -99,7 +124,7 @@ class UserProjectRole(db.Model):
 
     user = db.relationship('User', back_populates='project_roles')
     project = db.relationship('Project', back_populates='user_project_roles')
-    role = db.relationship('Role', back_populates='project_roles')
+    role = db.relationship('Role')
 
     def __repr__(self):
         return f'<UserProjectRole user_id={self.user_id} project_id={self.project_id} role_id={self.role_id}>'
@@ -108,7 +133,7 @@ class UserProjectRole(db.Model):
         return {
             "user_id": self.user_id,
             "project_id": self.project_id,
-            "role": self.role.name
+            "role_id": self.role_id,
         }
 
 
