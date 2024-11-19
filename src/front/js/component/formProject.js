@@ -11,10 +11,11 @@ export const FormProject = () => {
     const [companyName, setCompanyName] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [startDate, setStartDate] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const success = await actions.createProject(projectName, companyName, projectDescription);
+        const success = await actions.createProject(projectName, companyName, projectDescription, startDate);
 
         if (success) {
             navigate("/projectlist"); // Redirigir a la lista de proyectos tras crear uno nuevo
@@ -48,6 +49,20 @@ export const FormProject = () => {
                         <textarea type="textarea" className="form-control" id="projectDescription" placeholder="Enter Project Description" value={projectDescription}
                             onChange={(e) => setProjectDescription(e.target.value)} required />
                     </div>
+                    <div className="mb-3">
+                        <label htmlFor="startDate" className="form-label">Start Date</label>
+                        <input 
+                            type="date" 
+                            className="form-control" 
+                            id="startDate" 
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)} 
+                            required 
+                        />
+                    </div>
+                    {errorMessage && (
+                        <div className="alert alert-danger text-center mt-3">{errorMessage}</div>
+                    )}
                     <div className="row justify-content-center mt-3">
                         <div className="col-auto">
                             <button type="submit" className="btn">Register Project</button>

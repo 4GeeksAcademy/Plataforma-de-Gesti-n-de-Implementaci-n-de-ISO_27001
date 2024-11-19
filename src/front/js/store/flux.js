@@ -184,7 +184,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				return true;
 			},
 
-			createProject: async (projectName, companyName, projectDescription) => {
+			createProject: async (projectName, companyName, projectDescription, startDate) => {
 				const store = getStore();
 				
 				try {
@@ -194,7 +194,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"Authorization": `Bearer ${store.accessToken}`,
 							"Content-Type": "application/json",
 						},
-						body: JSON.stringify({ projectName, companyName, projectDescription })
+						body: JSON.stringify({ projectName, companyName, projectDescription, startDate, })
 					});
 			
 					if (!response.ok) {
