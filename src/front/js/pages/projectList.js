@@ -35,7 +35,7 @@ export const ProjectList = () => {
 
     return (
       <div className="container">
-          {store.user && <h2 className="user-name">Bienvenido, {store.user.full_name}</h2>}
+          
           <h1 className="title">Tus Proyectos</h1>
 
           <button onClick={handleAddProject} className="floating-add-button">

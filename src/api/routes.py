@@ -1,6 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+import datetime
 from flask import Flask, request, jsonify, url_for, Blueprint
 
 from api.models import db, User, Role, Project, UserProjectRole, TokenBlockedList
@@ -152,7 +153,7 @@ def project_create():
     try:
         body = request.get_json()
 
-        required_fields = ["projectName", "companyName", "projectDescription"]
+        required_fields = ["projectName", "companyName", "projectDescription", "startDate"]
         for field in required_fields:
             if field not in body or body[field] is None:
                 return jsonify({"msg": f"Debe especificar un {field}"}), 400
@@ -160,15 +161,14 @@ def project_create():
         project = Project.query.filter_by(name=body["projectName"]).first()
         if project is not None:
             return jsonify({"msg": "El proyecto ya existe"}), 400
-
-        # Obtener el ID del admin desde el token JWT
-        #admin_id = get_jwt_identity()  # Esto devuelve el `admin_id` del payload del token
+        
         user_id = get_jwt_identity()
 
         new_project = Project(
             name=body["projectName"],
             description=body.get("projectDescription", ""),
             company_name=body["companyName"],
+            start_date=body["startDate"],
             project_leader_id=user_id
         )
 
