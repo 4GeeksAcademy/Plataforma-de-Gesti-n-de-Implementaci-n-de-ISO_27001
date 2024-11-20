@@ -5,3 +5,171 @@
     one more css for each page that will contain the selected used 
     on that page only (the ones not reused in other pages).
 */
+/* General */
+/* General */
+.home-container {
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    text-align: center;
+    padding: 0 20px;
+    overflow: hidden;
+    
+    
+}
+hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Overlay negro con opacidad */
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2; /* Asegura que el texto esté por encima del overlay */
+}
+
+
+.hero-title {
+    font-size: 3.5rem;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8); /* Sombra sutil */
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-title .highlight {
+    color: #D35400;
+    animation: pulse 2s infinite;
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    animation: fadeInUp 1.5s ease-in-out;
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #D35400;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #A63D00;
+}
+
+.button-secondary {
+    border: 2px solid #D35400;
+    color: #D35400;
+}
+
+/* Features Section */
+.features {
+    padding: 50px 20px;
+    background-color: #f8f1e5;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 2rem;
+    margin-bottom: 30px;
+}
+
+.feature-cards {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.card {
+    max-width: 300px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    transition: transform 0.3s ease;
+    text-align: center;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    max-width: 500px;
+    max-height: 200px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+/* CTA Section */
+.cta {
+    background-color: #1A2B40;
+    color: #ffffff;
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.cta-title {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.cta-text {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.cta-button {
+    padding: 10px 30px;
+    background-color: #D35400;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #A63D00;
+}
