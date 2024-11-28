@@ -16,7 +16,7 @@
     position: relative;
     background-size: cover;
     background-position: center;
-    height: 100vh;
+    height: 70vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -24,7 +24,13 @@
     text-align: center;
     padding: 0 20px;
     overflow: hidden;
-    
+    background: linear-gradient(to bottom, #1A2B40, #1C1C1C);
+
+
+
+
+
+
     
 }
 hero::before {
@@ -36,11 +42,21 @@ hero::before {
     height: 100%;
     background: rgba(0, 0, 0, 0.5); /* Overlay negro con opacidad */
     z-index: 1;
+    animation: moveBackground 5s infinite linear;
 }
-
+@keyframes moveBackground {
+    from {
+        transform: translate(-50%, -50%);
+    }
+    to {
+        transform: translate(0, 0);
+    }
+}
 .hero-content {
     position: relative;
     z-index: 2; /* Asegura que el texto esté por encima del overlay */
+    margin-left: 6%;
+    margin-right: 6%;
 }
 
 
@@ -50,6 +66,7 @@ hero::before {
     margin-bottom: 20px;
     color: #ffffff;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8); /* Sombra sutil */
+    animation: fadeInUp 1.5s ease-in-out;
 }
 
 @keyframes fadeInUp {
@@ -75,6 +92,28 @@ hero::before {
     color: #ffffff;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
 }
+.hero-image {
+    position: relative;
+    width: 300px;
+    height: auto;
+    mix-blend-mode: multiply;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1;
+    
+}
+.hero-image:hover {
+    opacity: 1;
+    transform: scale(1.05); /* Pequeño zoom al pasar el cursor */
+}
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 150px;
+    background: linear-gradient(to bottom, rgba(26, 43, 64, 0) 0%, #1A2B40 100%);
+    z-index: 2;
+}
 
 .hero-buttons {
     display: flex;
@@ -89,6 +128,15 @@ hero::before {
     border: none;
     border-radius: 5px;
     transition: background-color 0.3s ease;
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }
 
 .button:hover {
@@ -172,4 +220,18 @@ hero::before {
 
 .cta-button:hover {
     background-color: #A63D00;
+}
+.arrow-down {
+    animation: bounce 2s infinite;
+}
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
 }

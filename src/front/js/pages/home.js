@@ -1,15 +1,20 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
-import heroImage from "../../img/home1.webp";
+import heroImage from "../../img/logoApp.png";
 import whyUs from "../../img/whyUs.jpg";
 import cumplimiento from "../../img/Cumplimiento.jpg";
 import diseño from "../../img/Diseño.webp";
+import { useNavigate } from "react-router-dom";
 import "../../styles/home.css";
+
 
 export const Home = () => {
 	const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
 
+    const handleRegisterAccount = () => {
+        navigate("/register");
+    };
 	return (
 		<div className="home-container" style={{ backgroundImage: `url(${heroImage})` }}>
             {/* Hero Section */}
@@ -21,10 +26,11 @@ export const Home = () => {
                     <p className="hero-subtitle">
                         Simplifica la implementación de proyectos y asegura el cumplimiento con estándares modernos.
                     </p>
-                    <div className="hero-buttons">
+                    {/*<div className="hero-buttons">
                         <button className="button">Iniciar Sesión</button>
                         <button className="button button-secondary">Registrar</button>
-                    </div>
+                    </div>*/}
+                    {/*<img src={heroImage} alt="Hero Image" class="hero-image"></img>*/}
                 </div>
             </section>
 
@@ -54,7 +60,7 @@ export const Home = () => {
             <section className="cta">
                 <h2 className="cta-title">¡Empieza hoy mismo!</h2>
                 <p className="cta-text">Regístrate y lleva tus proyectos al siguiente nivel.</p>
-                <button className="cta-button">Regístrate</button>
+                <button className="cta-button" onClick={handleRegisterAccount}>Regístrate</button>
             </section>
         </div>
 	);

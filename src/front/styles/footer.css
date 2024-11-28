@@ -1,0 +1,55 @@
+.footer {
+    background-color: #1A2B40; /* Fondo oscuro */
+    color: #FFFFFF; /* Texto blanco */
+    text-align: center;
+    padding: 20px;
+    font-family: 'Open Sans', sans-serif;
+    border-top: #FFFFFF 1px solid;
+}
+
+.footer p {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+.footer-top {
+    margin-bottom: 15px;
+}
+
+.developer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.developer-link {
+    color: #D35400; /* Color de acento */
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.developer-link:hover {
+    color: #FFFFFF; /* Cambia a blanco al pasar el cursor */
+}
+
+.developer-link i {
+    margin-right: 5px; /* Espaciado entre el ícono y el texto */
+    font-size: 1.2rem; /* Tamaño del ícono */
+}
+.footer-bottom{
+    font-size: 0.9rem;
+    border-top: 1px solid #3F3F3F;
+}
+.footer-links{
+    margin-top: 5px;
+}
+.footer-link{
+    color: #D35400;
+    text-decoration: none;
+    margin: 0 10px;
+    font-size: 0.9rem;
+}
+.footer-link:hover{
+    color: #FFFFFF;
+}
