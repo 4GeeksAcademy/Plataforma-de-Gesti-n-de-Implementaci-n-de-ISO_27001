@@ -6,7 +6,7 @@
 :root {
     --background-sand: #F8F1E5;
     --navy: #1A2B40;
-    --navy-light: #55667d;
+    --navy-light: #F8F1E5;
     --orange: #D35400;
 
     --fuente-texto: 'Open Sans', sans-serif;
@@ -23,7 +23,8 @@ h1 {
 }
 
 nav, footer {
-    background-color: var(--navy-light);
+    background-color: #1A2B40;
+    border-bottom: #3F3F3F 1px solid;
 }
 
 footer {
