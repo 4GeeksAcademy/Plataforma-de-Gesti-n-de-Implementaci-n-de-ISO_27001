@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@400&display=swap');
+
+:root {
+    --background-sand: #F8F1E5;
+    --navy: #1A2B40;
+    --navy-light: #55667d;
+    --orange: #D35400;
+
+    --fuente-texto: 'Open Sans', sans-serif;
+    --fuente-titulos: 'Montserrat', sans-serif;
+}
+
+body {
+    font-family: var(--fuente-texto);
+    background-color: var(--background-sand);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    padding: 2rem;
+    width: 90%;
+    max-width: 400px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.login-form h1 {
+    font-family: var(--fuente-titulos);
+    color: var(--navy);
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    
+    border: 1px solid var(--navy-light);
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    transition: border 0.3s ease;
+    width: auto;
+}
+
+.input-group:hover {
+    border-color: var(--orange);
+}
+
+.input-group i {
+    color: var(--navy);
+    margin-right: 0.5rem;
+}
+
+.input-group input {
+    border: none;
+    outline: none;
+    width: 80%;
+    font-size: 1rem;
+}
+
+.btn-login {
+    background-color: var(--navy);
+    color: white;
+    font-family: var(--fuente-titulos);
+    padding: 0.75rem;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+    background-color: var(--orange);
+}
+
+.forgot-password {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+
+.forgot-password a {
+    color: var(--orange);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.forgot-password a:hover {
+    color: var(--navy);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

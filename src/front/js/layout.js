@@ -6,12 +6,15 @@ import { BackendURL } from "./component/backendURL";
 import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
+import { Login } from  "./pages/login";
 import injectContext from "./store/appContext";
 
-import { AdminRegister} from "./component/adminRegister";
-import { AssignRoles } from "./component/assignRoles";
+import { Register} from "./component/register";
+import { ManageUsers } from "./component/manageUsers";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+import {ProjectList} from "./pages/projectList";
+import {FormProject} from "./component/formProject";
 
 //create your first component
 const Layout = () => {
@@ -30,8 +33,11 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
-                        <Route element={<AdminRegister />} path="/administrator/register"/>
-                        <Route element={<AssignRoles />} path="/assign/roles"/>
+                        <Route element={<Login />} path="/login" />
+                        <Route element={<Register />} path="/register"/>
+                        <Route element={<ManageUsers />} path="/manage/users"/>
+                        <Route element={<ProjectList />} path ="/projectlist"/>
+                        <Route element={<FormProject />} path="/addproject" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
