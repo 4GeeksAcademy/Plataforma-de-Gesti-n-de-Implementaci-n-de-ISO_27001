@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 
@@ -13,8 +13,9 @@ import { Register} from "./component/register";
 import { ManageUsers } from "./component/manageUsers";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
-import {ProjectList} from "./pages/projectList";
-import {FormProject} from "./component/formProject";
+import { ProjectList } from "./pages/projectList";
+import { FormProject } from "./component/formProject";
+import { Sidebar } from "./component/sidebar";
 
 //create your first component
 const Layout = () => {
@@ -35,6 +36,11 @@ const Layout = () => {
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<Register />} path="/register"/>
+                        {/*/<Route element={<Sidebar />} path="/sidebar">*/}
+                        <Route element={<div> <h1>Dominios</h1> <Outlet></Outlet> </div>} path="/sidebar">
+                            <Route path="contexto" element={<h2>Contexto</h2>}/>
+                            <Route path="liderazgo" element={<h2>Liderazgo</h2>} />
+                        </Route>
                         <Route element={<ManageUsers />} path="/manage/users"/>
                         <Route element={<ProjectList />} path ="/projectlist"/>
                         <Route element={<FormProject />} path="/addproject" />

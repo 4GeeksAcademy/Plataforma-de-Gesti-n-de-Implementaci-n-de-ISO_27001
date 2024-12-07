@@ -1,0 +1,35 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    background-color: #343a40;
+    padding-top: 60px;
+    display: none;
+  }
+  
+  .sidebar.open {
+    display: block;
+  }
+  
+  .sidebar .nav-link {
+    color: white;
+  }
+  
+  .sidebar .nav-link:hover {
+    background-color: #007bff;
+  }
+  
+  .content {
+    margin-left: 0;
+    transition: margin-left 0.3s;
+  }
+  
+  .content.with-sidebar {
+    margin-left: 250px;
+  }
+  
+  .navbar-toggler {
+    border: none;
+  }
