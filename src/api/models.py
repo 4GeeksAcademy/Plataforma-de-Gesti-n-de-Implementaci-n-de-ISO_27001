@@ -139,114 +139,45 @@ class UserProjectRole(db.Model):
 class Iso(db.Model):
     __tablename__ = 'isos'
     id = db.Column(db.Integer, primary_key=True)
-    name_iso = db.Column(db.String(50), nullable=False)
-    year = db.Column(db.Integer, nullable=False)
-    deleted_at = db.Column(db.DateTime, nullable=True) 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    father = db.Column(db.String(50), nullable=False)
+    iso = db.Column(db.String(50), nullable=False)
+    version = db.Column(db.Integer, nullable=False)
+    level = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    
+    # Relación de uno a muchos con Question
+    questions = db.relationship('Question', backref='iso', lazy=True)
 
-    # Relaciones
-    selections = db.relationship('IsoSelection', back_populates='iso')
-
-class IsoSelection(db.Model):
-    __tablename__ = 'iso_selections'
-    id = db.Column(db.Integer, primary_key=True)
-    iso_id = db.Column(db.Integer, db.ForeignKey('isos.id'), nullable=False)
-    section_id = db.Column(db.Integer, db.ForeignKey('sections.id'), nullable=False)
-    deleted_at = db.Column(db.DateTime, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    # Relaciones
-    iso = db.relationship('Iso', back_populates='selections')
-    section = db.relationship('Section', back_populates='iso_selections')
+    def __repr__(self):
+        return f'<Iso id={self.id}>'
 
 class Question(db.Model):
     __tablename__ = 'questions'
     id = db.Column(db.Integer, primary_key=True)
-    sub_section_id = db.Column(db.Integer, db.ForeignKey('sub_sections.id'), nullable=False)
     question = db.Column(db.String(150), nullable=False)
-    order = db.Column(db.Integer, nullable=False)
-    menu_id = db.Column(db.Integer, nullable=False)
     deleted_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    # Relaciones
-    sub_section = db.relationship('SubSection', back_populates='questions')
-
-class SubSection(db.Model):
-    __tablename__ = 'sub_sections'
-    id = db.Column(db.Integer, primary_key=True)
-    section_id = db.Column(db.Integer, db.ForeignKey('sections.id'), nullable=False)
-    sub_section = db.Column(db.String(150), nullable=False)
-    deleted_at = db.Column(db.DateTime, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    # Relaciones
-    section = db.relationship('Section', back_populates='sub_sections')
-    questions = db.relationship('Question', back_populates='sub_section')
-
-class Section(db.Model):
-    __tablename__ = 'sections'
-    id = db.Column(db.Integer, primary_key=True)
-    section = db.Column(db.String(100), nullable=False)
-    deleted_at = db.Column(db.DateTime, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    # Relaciones
-    sub_sections = db.relationship('SubSection', back_populates='section')
-    iso_selections = db.relationship('IsoSelection', back_populates='section')
-    item_sections = db.relationship('ItemSection', back_populates='section')  # Relación con ItemSection
-
-
-class ItemSection(db.Model):
-    __tablename__ = 'itemsections'
-    id = db.Column(db.Integer, primary_key=True)
-    item_id = db.Column(db.Integer, db.ForeignKey('items.id'), nullable=False)
-    section_id = db.Column(db.Integer, db.ForeignKey('sections.id'), nullable=False)
-    deleted_at = db.Column(db.DateTime, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    # Relaciones
-    item = db.relationship('Item', back_populates='item_sections')  # Corregido a 'item_sections'
-    section = db.relationship('Section', back_populates='item_sections')
-
-
-class Item(db.Model):
-    __tablename__ = 'items'
-    id = db.Column(db.Integer, primary_key=True)
-    item = db.Column(db.String(50), nullable=False)
-    deleted_at = db.Column(db.DateTime, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
-    # Relaciones
-    item_sections = db.relationship('ItemSection', back_populates='item')  # Corregido a 'item_sections'
-
+    
+    # Clave foránea de Iso
+    iso_id = db.Column(db.Integer, db.ForeignKey('isos.id'), nullable=False)
+    
+    # Relación de uno a muchos con Answer
+    answers = db.relationship('Answer', backref='question', lazy=True)
 
 class Answer(db.Model):
     __tablename__ = 'answers'
     id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.Integer, nullable=False)
-    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)
-    iso_id = db.Column(db.Integer, db.ForeignKey('isos.id'), nullable=False)
-    sub_section_id = db.Column(db.Integer, db.ForeignKey('sub_sections.id'), nullable=False)
-    response_menu = db.Column(db.Integer, nullable=False)
-    recourse = db.Column(db.String(200), nullable=True)
-    questions = db.Column(db.String(200), nullable=True)
+    answer = db.Column(db.String(200), nullable=True)  # Cambio a 'answer' para un mejor sentido
     observations = db.Column(db.String(200), nullable=True)
     deleted_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Clave foránea de Question
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)
 
-    # Relaciones
-    question = db.relationship('Question')
-    iso = db.relationship('Iso')
-    sub_section = db.relationship('SubSection')
 
 class TokenBlockedList(db.Model):
     id = db.Column(db.Integer, primary_key=True)
