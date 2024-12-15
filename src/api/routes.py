@@ -406,3 +406,29 @@ def get_basic_inf():
     
 
     return jsonify(iso_data),200
+
+@api.route('/contexts', methods=['POST'])
+def create_context():
+    try:
+        data = request.get_json() 
+        
+        for contexto_data in data:
+            print(data)
+            iso = Iso(
+                id=contexto_data['id'],
+                father=contexto_data['father'],
+                iso=contexto_data['iso'],
+                version=contexto_data['version'],
+                level=contexto_data['level'],
+                title=contexto_data['title'],
+                description=contexto_data['description']
+            )
+
+            db.session.add(iso)
+
+        db.session.commit()
+        
+        return jsonify({"message": "Contextos guardados correctamente"}), 201
+    except Exception as e:
+        print (e)
+        return jsonify({"error": str(e)}), 500
