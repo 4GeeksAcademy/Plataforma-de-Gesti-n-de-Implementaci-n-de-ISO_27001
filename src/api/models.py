@@ -151,6 +151,16 @@ class Iso(db.Model):
 
     def __repr__(self):
         return f'<Iso id={self.id}>'
+    
+    def serialize(self):
+        return {
+            "id":self.id,
+            "father":self.father,
+            "version":self.version,
+            "level":self.level,
+            "title":self.title,
+            "description":self.description
+        }
 
 class Question(db.Model):
     __tablename__ = 'questions'
