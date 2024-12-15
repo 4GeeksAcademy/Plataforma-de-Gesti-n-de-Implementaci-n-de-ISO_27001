@@ -16,6 +16,7 @@ import { Footer } from "./component/footer";
 import { ProjectList } from "./pages/projectList";
 import { FormProject } from "./component/formProject";
 import { Sidebar } from "./component/sidebar";
+import { Main } from "./pages/main";
 
 //create your first component
 const Layout = () => {
@@ -36,7 +37,7 @@ const Layout = () => {
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<Register />} path="/register"/>
-                        <Route element={<Sidebar />} path="/sidebar"/>
+                        <Route element={<Main />} path="/main/*"/>
                         <Route element={<div> <h1>Dominios</h1> <Outlet></Outlet> </div>} path="/sidebar">
                             <Route path="contexto" element={<h2>Contexto</h2>}/>
                             <Route path="liderazgo" element={<h2>Liderazgo</h2>} />

@@ -107,7 +107,6 @@ class Project(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
-
             "company_name": self.company_name,
             "start_date": self.start_date,
             "end_date": self.end_date,
@@ -139,18 +138,29 @@ class UserProjectRole(db.Model):
 class Iso(db.Model):
     __tablename__ = 'isos'
     id = db.Column(db.Integer, primary_key=True)
-    father = db.Column(db.String(50), nullable=False)
+    father = db.Column(db.Integer, nullable=False)
     iso = db.Column(db.String(50), nullable=False)
     version = db.Column(db.Integer, nullable=False)
     level = db.Column(db.String(100), nullable=False)
-    title = db.Column(db.String(200), nullable=False)
-    description = db.Column(db.String(200), nullable=False)
+    title = db.Column(db.String(300), nullable=False)
+    description = db.Column(db.String(300), nullable=False)
     
     # Relación de uno a muchos con Question
     questions = db.relationship('Question', backref='iso', lazy=True)
 
     def __repr__(self):
         return f'<Iso id={self.id}>'
+    
+    def serialize(self):
+        return {
+            "id":self.id,
+            "father":self.father,
+            "version":self.version,
+            "iso":self.iso,
+            "level":self.level,
+            "title":self.title,
+            "description":self.description
+        }
 
 class Question(db.Model):
     __tablename__ = 'questions'

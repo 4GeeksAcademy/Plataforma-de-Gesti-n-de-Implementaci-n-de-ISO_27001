@@ -6,6 +6,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			users: [],
 			roles: [],
 			message: null,
+			ISOS: null,
 			projects: [], // Definir projects como un arreglo vacío
 			demo: [
 				{
@@ -212,7 +213,38 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error("Error al crear el proyecto:", error);
 					return false;
 				}
+			}, getIsos: async () =>{
+				const response = await fetch(backendURL + "/testing")
+				if (response.ok){
+					const data = await response.json()
+					setStore({ISOS: data})
+				}
+			}, 
+			getParents: () => {
+				const store = getStore()
+				let parents = store.ISOS.filter((iso) => iso.father == "0")
+				return parents
 			},
+			getChildren: (fatherID) => {
+				const store = getStore()
+				const info = store.ISOS
+				let subdomains  = info.filter((dominio) => dominio.father == fatherID)
+				return subdomains
+			},getSubDomainInfo: (subDomainID) =>{
+				let {ISOS} = getStore()
+				let subDomain = ISOS.find((iso) => iso.id == parseInt(subDomainID))
+				let domain = ISOS.find((iso) => iso.id == parseInt(subDomain.father))
+				let requirements =getActions().getChildren(subDomainID)
+
+				return {
+					dominio: domain.title,
+					subDominio: subDomain.title,
+					requerimientos: requirements 
+				}
+
+
+			}
+			
 			
 		}
 	};
