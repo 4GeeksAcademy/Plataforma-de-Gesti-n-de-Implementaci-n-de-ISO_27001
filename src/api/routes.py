@@ -15,7 +15,6 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt, get_j
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail, Message
 from tempfile import NamedTemporaryFile
-from firebase_admin import storage
 from werkzeug.utils import secure_filename
 
 from werkzeug.security import generate_password_hash
