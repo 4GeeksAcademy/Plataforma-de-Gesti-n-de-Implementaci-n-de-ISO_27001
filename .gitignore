@@ -83,3 +83,5 @@ __pycache__/
 
 # migrations
 migrations/
+
+firebase_key.json

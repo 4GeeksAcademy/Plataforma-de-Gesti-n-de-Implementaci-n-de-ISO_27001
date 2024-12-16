@@ -15,6 +15,9 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import {ProjectList} from "./pages/projectList";
 import {FormProject} from "./component/formProject";
+import { ResetPassword } from  "./pages/resetPassword";
+import { ChangePassword } from "./pages/changePassword";
+
 
 //create your first component
 const Layout = () => {
@@ -38,6 +41,8 @@ const Layout = () => {
                         <Route element={<ManageUsers />} path="/manage/users"/>
                         <Route element={<ProjectList />} path ="/projectlist"/>
                         <Route element={<FormProject />} path="/addproject" />
+                        <Route element={<ResetPassword />} path="/reset-password"/>
+                        <Route element={<ChangePassword />} path="/change-password" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />
