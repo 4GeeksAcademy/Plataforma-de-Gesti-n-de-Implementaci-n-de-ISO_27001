@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { Sidebar } from "../component/sidebar";
 import { FormMain } from "../component/formMain";
 import { Context } from "../store/appContext";
+import { Default } from "./default";
 
 
 export const Main = () => {
@@ -38,7 +39,7 @@ export const Main = () => {
                         }
                         )
                     )}
-                    <Route  path="/" element={<h1>Aqui va tu contenido default</h1>}/>
+                    <Route  path="/" element={<Default/>}/>
                                        </Routes>
             </div>
         </div>
