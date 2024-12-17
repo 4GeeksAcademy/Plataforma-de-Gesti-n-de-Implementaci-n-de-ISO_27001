@@ -241,9 +241,36 @@ const getState = ({ getStore, getActions, setStore }) => {
 					subDominio: subDomain.title,
 					requerimientos: requirements 
 				}
+			},
 
-
-			}
+			getCurrentUser: async () => {
+				const { accessToken } = getStore();
+				if (!accessToken) return;
+			
+				try {
+					const response = await fetch(`${backendURL}/user/profile`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${accessToken}`,
+							"Content-Type": "application/json",
+						},
+					});
+			
+					if (response.ok) {
+						const user = await response.json();
+						setStore({ user });
+					} else {
+						console.log("Error al obtener usuario:", response.status);
+					}
+				} catch (error) {
+					console.error("Error en getCurrentUser:", error);
+				}
+			}, //llama a endpoint /user/profile con el token en el header para obtener la información del usuario (nombre, etc.)
+			 
+			logout: () => {
+				setStore({ accessToken: null, user: null }); // Limpia el estado del token y usuario
+				localStorage.removeItem("accessToken"); // Limpia el token del almacenamiento local
+			},
 			
 			
 		}
