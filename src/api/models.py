@@ -112,7 +112,6 @@ class Project(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
-
             "company_name": self.company_name,
             "start_date": self.start_date,
             "end_date": self.end_date,
@@ -145,6 +144,59 @@ class UserProjectRole(db.Model):
             "project_id": self.project_id,
             "role_id": self.role_id,
         }
+
+class Iso(db.Model):
+    __tablename__ = 'isos'
+    id = db.Column(db.Integer, primary_key=True)
+    father = db.Column(db.Integer, nullable=False)
+    iso = db.Column(db.String(50), nullable=False)
+    version = db.Column(db.Integer, nullable=False)
+    level = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(300), nullable=False)
+    description = db.Column(db.String(300), nullable=False)
+    
+    # Relación de uno a muchos con Question
+    questions = db.relationship('Question', backref='iso', lazy=True)
+
+    def __repr__(self):
+        return f'<Iso id={self.id}>'
+    
+    def serialize(self):
+        return {
+            "id":self.id,
+            "father":self.father,
+            "version":self.version,
+            "iso":self.iso,
+            "level":self.level,
+            "title":self.title,
+            "description":self.description
+        }
+
+class Question(db.Model):
+    __tablename__ = 'questions'
+    id = db.Column(db.Integer, primary_key=True)
+    question = db.Column(db.String(150), nullable=False)
+    deleted_at = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Clave foránea de Iso
+    iso_id = db.Column(db.Integer, db.ForeignKey('isos.id'), nullable=False)
+    
+    # Relación de uno a muchos con Answer
+    answers = db.relationship('Answer', backref='question', lazy=True)
+
+class Answer(db.Model):
+    __tablename__ = 'answers'
+    id = db.Column(db.Integer, primary_key=True)
+    answer = db.Column(db.String(200), nullable=True)  # Cambio a 'answer' para un mejor sentido
+    observations = db.Column(db.String(200), nullable=True)
+    deleted_at = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Clave foránea de Question
+    question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)
 
 
 class TokenBlockedList(db.Model):

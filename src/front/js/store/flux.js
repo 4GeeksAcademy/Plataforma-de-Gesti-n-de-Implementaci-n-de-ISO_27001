@@ -6,6 +6,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			users: [],
 			roles: [],
 			message: null,
+			ISOS: null,
 			projects: [], // Definir projects como un arreglo vacío
 			demo: [
 				{
@@ -212,108 +213,38 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error("Error al crear el proyecto:", error);
 					return false;
 				}
+			}, getIsos: async () =>{
+				const response = await fetch(backendURL + "/testing")
+				if (response.ok){
+					const data = await response.json()
+					setStore({ISOS: data})
+				}
+			}, 
+			getParents: () => {
+				const store = getStore()
+				let parents = store.ISOS.filter((iso) => iso.father == "0")
+				return parents
 			},
+			getChildren: (fatherID) => {
+				const store = getStore()
+				const info = store.ISOS
+				let subdomains  = info.filter((dominio) => dominio.father == fatherID)
+				return subdomains
+			},getSubDomainInfo: (subDomainID) =>{
+				let {ISOS} = getStore()
+				let subDomain = ISOS.find((iso) => iso.id == parseInt(subDomainID))
+				let domain = ISOS.find((iso) => iso.id == parseInt(subDomain.father))
+				let requirements =getActions().getChildren(subDomainID)
 
-            forgotPassword: async (email) => {
-                try {
-                    const response = await fetch(backendURL +"/forgotpassword", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({ email: email }), 
-                    });
-
-                    if (!response.ok) {
-                        console.log("Error: " + response.status);
-                        const errorData = await response.json();
-                        setStore({
-                            message: null,
-                            error: errorData.msg || "Error desconocido",
-                        });
-                        return false;
-                    }
-
-                    const data = await response.json();
-                    if (data.msg) {
-                        setStore({
-                            message: data.msg,
-                            error: null,
-                        });
-                        return true;
-                    }
-                } catch (err) {
-                    console.error("Error en forgotPassword:", err);
-                    setStore({
-                        message: null,
-                        error: "Ocurrió un error al procesar la solicitud.",
-                    });
-                }
-                return false;
-            },
-			changePassword: async (currentPassword, newPassword, confirmPassword, token) => {
-				// Verifica que las contraseñas nuevas coincidan
-				if (newPassword !== confirmPassword) {
-					setStore({
-						message: null,
-						error: "Las contraseñas nuevas no coinciden.",
-					});
-					return false;
+				return {
+					dominio: domain.title,
+					subDominio: subDomain.title,
+					requerimientos: requirements 
 				}
-			
-				// Verifica que la nueva contraseña tenga al menos 6 caracteres
-				if (newPassword.length < 6) {
-					setStore({
-						message: null,
-						error: "La nueva contraseña debe tener al menos 6 caracteres.",
-					});
-					return false;
-				}
-			
-				try {
-					const response = await fetch(backendURL + "/changepassword", {
-						method: "PATCH",
-						headers: {
-							"Content-Type": "application/json",
-							"Authorization": `Bearer ${token}`, // Se envía el token en el encabezado
-						},
-						body: JSON.stringify({
-							current_password: currentPassword,
-							new_password: newPassword,
-						}),
-					});
-			
-					if (!response.ok) {
-						console.log("Error: " + response.status);
-						const errorData = await response.json();
-						setStore({
-							message: null,
-							error: errorData.msg || "Error desconocido",
-						});
-						return false;
-					}
-			
-					const data = await response.json();
-					if (data.msg) {
-						setStore({
-							message: data.msg,
-							error: null,
-						});
-						return true;
-					}
-				} catch (err) {
-					console.error("Error en changePassword:", err);
-					setStore({
-						message: null,
-						error: "Ocurrió un error al procesar la solicitud.",
-					});
-				}
-				return false;
-			},
-			
-		
-			
 
+
+			}
+			
 			
 		}
 	};
