@@ -96,7 +96,6 @@ class Project(db.Model):
     # ID del Jefe de Proyecto
     project_leader_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Usuario jefe de proyecto
     project_leader = db.relationship('User', foreign_keys=[project_leader_id], backref='led_projects')
-    project_file = db.Column(db.String(3000), nullable=True)
 
     # Relación con los roles de usuarios en el proyecto
     user_project_roles = db.relationship('UserProjectRole', back_populates='project')
@@ -117,7 +116,6 @@ class Project(db.Model):
             "end_date": self.end_date,
             "status": self.status,
             "project_leader": self.project_leader.full_name if self.project_leader else None,
-            "files": [self.project_file]  # Incluir los archivos en la serialización
         }
 
 
@@ -194,6 +192,7 @@ class Answer(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    project_file = db.Column(db.String(3000), nullable=True)
     
     # Clave foránea de Question
     question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)

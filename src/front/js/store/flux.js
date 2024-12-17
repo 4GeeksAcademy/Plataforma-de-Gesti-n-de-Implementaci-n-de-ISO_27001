@@ -243,7 +243,104 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 
-			}
+			},
+			forgotPassword: async (email) => {
+                try {
+                    const response = await fetch(backendURL +"/forgotpassword", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ email: email }), 
+                    });
+
+                    if (!response.ok) {
+                        console.log("Error: " + response.status);
+                        const errorData = await response.json();
+                        setStore({
+                            message: null,
+                            error: errorData.msg || "Error desconocido",
+                        });
+                        return false;
+                    }
+
+                    const data = await response.json();
+                    if (data.msg) {
+                        setStore({
+                            message: data.msg,
+                            error: null,
+                        });
+                        return true;
+                    }
+                } catch (err) {
+                    console.error("Error en forgotPassword:", err);
+                    setStore({
+                        message: null,
+                        error: "Ocurrió un error al procesar la solicitud.",
+                    });
+                }
+                return false;
+            },
+			changePassword: async (currentPassword, newPassword, confirmPassword, token) => {
+				// Verifica que las contraseñas nuevas coincidan
+				if (newPassword !== confirmPassword) {
+					setStore({
+						message: null,
+						error: "Las contraseñas nuevas no coinciden.",
+					});
+					return false;
+				}
+			
+				// Verifica que la nueva contraseña tenga al menos 6 caracteres
+				if (newPassword.length < 6) {
+					setStore({
+						message: null,
+						error: "La nueva contraseña debe tener al menos 6 caracteres.",
+					});
+					return false;
+				}
+			
+				try {
+					const response = await fetch(backendURL + "/changepassword", {
+						method: "PATCH",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${token}`, // Se envía el token en el encabezado
+						},
+						body: JSON.stringify({
+							current_password: currentPassword,
+							new_password: newPassword,
+						}),
+					});
+			
+					if (!response.ok) {
+						console.log("Error: " + response.status);
+						const errorData = await response.json();
+						setStore({
+							message: null,
+							error: errorData.msg || "Error desconocido",
+						});
+						return false;
+					}
+			
+					const data = await response.json();
+					if (data.msg) {
+						setStore({
+							message: data.msg,
+							error: null,
+						});
+						return true;
+					}
+				} catch (err) {
+					console.error("Error en changePassword:", err);
+					setStore({
+						message: null,
+						error: "Ocurrió un error al procesar la solicitud.",
+					});
+				}
+				return false;
+			},
+			
 			
 			
 		}
