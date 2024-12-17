@@ -12,6 +12,7 @@ class User(db.Model):
     full_name = db.Column(db.String(120), nullable=True)
     registered_on = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
+    profile_pic = db.Column(db.String(300), nullable=True)
 
     
     # Relación con RoleUser (tabla intersección)
@@ -95,9 +96,13 @@ class Project(db.Model):
     # ID del Jefe de Proyecto
     project_leader_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Usuario jefe de proyecto
     project_leader = db.relationship('User', foreign_keys=[project_leader_id], backref='led_projects')
+    project_file = db.Column(db.String(3000), nullable=True)
+
     # Relación con los roles de usuarios en el proyecto
     user_project_roles = db.relationship('UserProjectRole', back_populates='project')
-    
+
+    # Relación con los files
+    # project_files = db.relationship('ProjectFile', back_populates='project')
 
     def __repr__(self):
         return f'<Project {self.name}>'
@@ -111,9 +116,14 @@ class Project(db.Model):
             "start_date": self.start_date,
             "end_date": self.end_date,
             "status": self.status,
-            "project_leader": self.project_leader.full_name if self.project_leader else None
+            "project_leader": self.project_leader.full_name if self.project_leader else None,
+            "files": [self.project_file]  # Incluir los archivos en la serialización
         }
 
+
+
+
+    
 class UserProjectRole(db.Model):
     __tablename__ = 'user_project_role'
     id = db.Column(db.Integer, primary_key=True)

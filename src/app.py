@@ -1,6 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+
 import os
 from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
@@ -13,8 +14,10 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
-
-
+import firebase_admin, cloudinary
+from firebase_admin import credentials
+import cloudinary.uploader
+import cloudinary.api
 
 # from models import Person
 
@@ -24,6 +27,13 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 
 app.url_map.strict_slashes = False
+
+cloudinary.config( 
+    cloud_name = os.getenv("CLOUDINARY_CLOUD"), 
+    api_key = os.getenv("CLOUDINARY_KEY"), 
+    api_secret = os.getenv("CLOUDINARY_SECRET"),
+    secure=True
+)
 
 app.config['MAIL_SERVER'] = 'mx.consultancysecurity.com'  # Cambia por tu servidor SMTP
 app.config['MAIL_PORT'] = 587  # Cambia según tu configuración

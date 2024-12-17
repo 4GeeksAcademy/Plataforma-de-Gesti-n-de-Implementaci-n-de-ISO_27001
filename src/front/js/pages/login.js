@@ -24,6 +24,9 @@ export const Login = () => {
         }
 
     };
+    const handleForgotPassword = () => {
+        navigate("/reset-password");
+    };
 
     return (
         <div className="login-container">
@@ -52,7 +55,7 @@ export const Login = () => {
                         />
                     </div>
                     <button type="submit" className="btn-login">Iniciar sesión</button>
-                    <p className="forgot-password">
+                    <p className="forgot-password" onClick={handleForgotPassword}>
                         ¿Olvidaste tu contraseña? <a href="#">Recupérala aquí</a>
                     </p>
                 </form>
