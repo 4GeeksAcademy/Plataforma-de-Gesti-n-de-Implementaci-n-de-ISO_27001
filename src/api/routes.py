@@ -6,7 +6,7 @@ import datetime, cloudinary
 import uuid
 from flask import Flask, request, jsonify, url_for, json, Blueprint
 
-from api.models import db, User, Role, Project, UserProjectRole, TokenBlockedList
+from api.models import db, User, Role, Project, Iso, UserProjectRole, TokenBlockedList
 from datetime import timedelta
 
 from api.utils import generate_sitemap, APIException
@@ -534,3 +534,50 @@ def get_project_files(project_id):
     except Exception as ex:
         print("Error al obtener los archivos del proyecto:", ex)
         return jsonify({"msg": "Error al obtener los archivos del proyecto"}), 500
+
+@api.route('/testing/<int:isoID>', methods=['GET'])
+def get_basic_info_by_id(isoID):
+    iso = Iso.query.get(isoID)
+    if not iso:
+        return jsonify({"msg": "Iso no encontrado"}),404
+    iso_data = iso.serialize()
+    subDomains = Iso.query.filter_by(father=str(iso.id)).all()
+    if subDomains:
+        subDomains_data = [domain.serialize() for domain in subDomains]
+         
+        iso_data["subDomains"] = subDomains_data
+    
+    return jsonify({"info":iso_data}),200
+
+@api.route('/testing', methods=['GET'])
+def get_basic_inf():
+    isos = Iso.query.all()
+    if not isos:
+        return jsonify({"msg": "Iso no encontrado"}),404
+    iso_data = [iso.serialize() for iso in isos]
+    
+    return jsonify(iso_data),200
+
+@api.route('/contexts', methods=['POST'])
+def create_context():
+    try:
+        data = request.get_json() 
+        
+        for contexto_data in data:
+            print(data)
+            iso = Iso(
+                id=contexto_data['id'],
+                father=contexto_data['father'],
+                iso=contexto_data['iso'],
+                version=contexto_data['version'],
+                level=contexto_data['level'],
+                title=contexto_data['title'],
+                description=contexto_data['description']
+            )
+            db.session.add(iso)
+        db.session.commit()
+        
+        return jsonify({"message": "Contextos guardados correctamente"}), 201
+    except Exception as e:
+        print (e)
+        return jsonify({"error": str(e)}), 500
