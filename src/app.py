@@ -14,8 +14,7 @@ from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
-import firebase_admin, cloudinary
-from firebase_admin import credentials
+import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
