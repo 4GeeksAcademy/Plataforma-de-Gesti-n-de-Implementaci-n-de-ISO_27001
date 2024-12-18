@@ -37,18 +37,18 @@ export const FormRequiriment = ({requirement}) => {
             </div>
          </div>
         {/* Subir Archivo */}
-            <div className="row mb-3">
-                <div className="col-6 text-center">
-                    <div className="btn-group" role="group" aria-label="Basic outlined example">
-                        <button type="button" className="btn btn-outline-primary">Subir</button>
-                    </div>
-                </div>
-                <div className="col-6 text-center">
-                    <div className="btn-group" role="group" aria-label="Basic outlined example">
-                        <button type="button" className="btn btn-outline-primary">Guardar</button>
-                    </div>
-                </div>
-            </div>
+         <div className="row mb-3">
+               <div className="col-6 text-center">
+                  <div className="btn-group" role="group" aria-label="Basic outlined example">
+                     <button type="button" className="btn btn-outline-primary">Subir</button>
+                  </div>
+               </div>
+               <div className="col-6 text-center">
+                  <div className="btn-group" role="group" aria-label="Basic outlined example">
+                     <button type="button" className="btn btn-outline-primary">Guardar</button>
+                  </div>
+               </div>
+         </div>
       </div>
     </div>
    );

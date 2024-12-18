@@ -1,9 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Context } from '../store/appContext';
-
-
-
+import "../../styles/sidebar.css";
 
 export const Sidebar = ({opciones}) => {
   const {store, actions} = useContext(Context)
@@ -27,9 +25,9 @@ export const Sidebar = ({opciones}) => {
 
         {openIndex[nombre] && 
         (<div className='collapse show'  id={nombre}>
-        <ol>{childrens?.map(child =>{
+        <ul>{childrens?.map(child =>{
           return renderOptions(child, true)
-        })}</ol>
+        })}</ul>
         </div>)}
           
       </li>)
@@ -45,9 +43,10 @@ useEffect(()=> {
 
   return (
     <div className="sidebar">
-     <ol className="flex-column w-75 bg-light text-dark h-100 list-group">
+     {/* <ol className="flex-column w-75 bg-light text-dark h-100 list-group"> */}
+     <ul className="sidebar-ul">
       {mainOptions?.map(renderOptions)}
-     </ol>
+     </ul>
     </div>
   );
 };
