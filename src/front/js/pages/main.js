@@ -35,12 +35,12 @@ export const Main = () => {
                     {rutas && (
                         rutas.map((ruta, index) => {
                             let subDomainInfo = actions.getSubDomainInfo(ruta.split("-")[1])
-                            return <Route path={ruta} element={<FormMain info={subDomainInfo} key={`${ruta}-${index}`}/>}/>
+                            return <Route path={`/project/${projectid}/${ruta}`} element={<FormMain info={subDomainInfo} key={`${ruta}-${index}`}/>}/>
                         }
                         )
                     )}
                     <Route  path="/" element={<Default/>}/>
-                                       </Routes>
+                </Routes>
             </div>
         </div>
     )
