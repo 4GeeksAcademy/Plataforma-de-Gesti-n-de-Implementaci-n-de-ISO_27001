@@ -1,15 +1,16 @@
 :root {
   --background-sand: #F8F1E5;
   --navy: #1A2B40;
-  --navy-medium: #2D3748;
+  --navy-medium: #404E66;
   --navy-light: #748CAB;
   --orange: #D35400;
 
   --fuente-texto: 'Open Sans', sans-serif;
   --fuente-titulos: 'Montserrat', sans-serif;
 }
+
 .sidebar {
-  background-color: var(--navy-light);
+  background-color: var(--navy-medium);
   margin-left: 0;
   padding-left: 0;
   color: white;
@@ -17,7 +18,7 @@
 
 
 .sidebar-ul {
-  background-color: var(--navy-light); 
+  background-color: var(--navy-medium); 
   margin-left: 0;
   padding-left: 0;
   color: white;
@@ -28,8 +29,8 @@
 }
 
 .sidebar .nav-link:hover {
-  background-color: white;
-  color: var(--orange);
+  background-color: var(--navy-light);
+  color: white;
 }
 
 ul {
@@ -41,6 +42,9 @@ ul {
   transition: margin-left 0.3s;
 }
 
+.navbar-toggler {
+  border: none;
+}
 /* .sidebar {
     position: fixed;
     top: 0;
