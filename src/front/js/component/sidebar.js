@@ -25,9 +25,9 @@ export const Sidebar = ({opciones}) => {
 
         {openIndex[nombre] && 
         (<div className='collapse show'  id={nombre}>
-        <ol>{childrens?.map(child =>{
+        <ul>{childrens?.map(child =>{
           return renderOptions(child, true)
-        })}</ol>
+        })}</ul>
         </div>)}
           
       </li>)

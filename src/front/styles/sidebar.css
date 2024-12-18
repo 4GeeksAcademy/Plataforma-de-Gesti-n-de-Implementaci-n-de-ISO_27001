@@ -1,15 +1,46 @@
+:root {
+  --background-sand: #F8F1E5;
+  --navy: #1A2B40;
+  --navy-medium: #2D3748;
+  --navy-light: #748CAB;
+  --orange: #D35400;
+
+  --fuente-texto: 'Open Sans', sans-serif;
+  --fuente-titulos: 'Montserrat', sans-serif;
+}
 .sidebar {
-  background-color: white;
+  background-color: var(--navy-light);
   margin-left: 0;
   padding-left: 0;
+  color: white;
 }
 
+
 .sidebar-ul {
-  background-color: white;
-  list-style-type: none; 
+  background-color: var(--navy-light); 
   margin-left: 0;
   padding-left: 0;
+  color: white;
 }
+
+.nav-link {
+  color: white;
+}
+
+.sidebar .nav-link:hover {
+  background-color: white;
+  color: var(--orange);
+}
+
+ul {
+  list-style-type: none;
+}
+
+.content {
+  margin-left: 0;
+  transition: margin-left 0.3s;
+}
+
 /* .sidebar {
     position: fixed;
     top: 0;
@@ -25,18 +56,6 @@
     display: block;
   }
   
-  .sidebar .nav-link {
-    color: white;
-  }
-  
-  .sidebar .nav-link:hover {
-    background-color: #007bff;
-  }
-  
-  .content {
-    margin-left: 0;
-    transition: margin-left 0.3s;
-  }
   
   .content.with-sidebar {
     margin-left: 250px;
