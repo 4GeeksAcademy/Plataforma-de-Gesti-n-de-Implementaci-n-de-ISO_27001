@@ -5,6 +5,7 @@ import { Sidebar } from "../component/sidebar";
 import { FormMain } from "../component/formMain";
 import { Context } from "../store/appContext";
 import { Default } from "./default";
+import "../../styles/main.css";
 
 
 export const Main = () => {
@@ -54,9 +55,9 @@ export const Main = () => {
         
     return (
 
-        <div className="d-flex" style={{height:"100vh"}}>
+        <div className="d-flex"style={{ height: "100vh", width: "100vw", flexDirection: "row" }}>
             <Sidebar/>
-            <div>
+            <div style={{ flex: "1" }}>
                 <Routes>
                     {rutas && (
                         rutas.map((ruta, index) => {
@@ -79,9 +80,8 @@ export const Main = () => {
                         )
                     )}
                     <Route  path="/" element={<Default/>}/>
-                                       </Routes>
+                </Routes>
             </div>
         </div>
     )
-
 }

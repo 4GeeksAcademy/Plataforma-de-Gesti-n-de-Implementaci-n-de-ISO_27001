@@ -9,18 +9,19 @@ export const FormMain = ({ info, projectId, existingResponses }) => {
 
 
    return (
-      <div className="container-fluid justify-content-center">
+      <div className="container0">
          {/* Título principal */}
-         <div className="row mb-3">
+         <div className="row" style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
             <div className="col-12 text-center">
-               <h1>{info.dominio}</h1>
+               <h1 className="h1-custom">{info.dominio}</h1>
             </div>
          </div>
 
+
          {/* Subtítulo */}
-         <div className="row mb-3">
+         <div className="row subtitle">
             <div className="col-12 text-center">
-               <h3>{info.subDominio}</h3>
+               <h3 className="h3-custom">{info.subDominio}</h3>
             </div>
          </div>
 
@@ -36,7 +37,6 @@ export const FormMain = ({ info, projectId, existingResponses }) => {
                ))}
             </div>
          </div>
-         
       </div>
    );
 };

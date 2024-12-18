@@ -19,7 +19,8 @@ import { Sidebar } from "./component/sidebar";
 import { Main } from "./pages/main";
 import { ResetPassword } from  "./pages/resetPassword";
 import { ChangePassword } from "./pages/changePassword";
-
+import { Profile } from "./pages/profile";
+import { Help } from "./pages/help";
 
 //create your first component
 const Layout = () => {
@@ -41,10 +42,6 @@ const Layout = () => {
                         <Route element={<Login />} path="/login" />
                         <Route element={<Register />} path="/register"/>
                         <Route element={<Main />} path="/main/*"/>
-                        <Route element={<div> <h1>Dominios</h1> <Outlet></Outlet> </div>} path="/sidebar">
-                            <Route path="contexto" element={<h2>Contexto</h2>}/>
-                            <Route path="liderazgo" element={<h2>Liderazgo</h2>} />
-                        </Route>
                         <Route element={<ManageUsers />} path="/manage/users"/>
                         <Route element={<ProjectList />} path ="/projectlist"/>
                         <Route element={<FormProject />} path="/addproject" />
@@ -52,6 +49,8 @@ const Layout = () => {
                         <Route element={<ChangePassword />} path="/change-password" />
                         <Route element={<Main />} path="/main/:projectId/*" />
 
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/help" element={<Help />} />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />

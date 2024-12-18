@@ -1,0 +1,55 @@
+:root {
+  --background-sand: #F8F1E5;
+  --background-sand1:   #E8E2D6;
+  --background-sand2:   #DBD5CA;
+  --background-sand3:   #D1CBC1;
+  --navy: #1A2B40;
+  --navy-medium: #404E66;
+  --navy-light: #748CAB;
+  --orange: #D35400;
+
+  --fuente-texto: 'Open Sans', sans-serif;
+  --fuente-titulos: 'Montserrat', sans-serif;
+}
+
+  .container-low{
+    background-color: var(--background-sand1);
+    color: var(--navy); 
+    font-size: 2rem; 
+    font-weight: 600; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); 
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    margin: 0;
+    padding: 1%;
+  }
+  .custom-card {
+    width: 90%;
+    background-color: white;
+    border-radius: 20px;
+    padding: 5%;
+    padding-top: 2%;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .custom-card:hover {
+      transform: translateY(-10px); 
+      box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.3); 
+  }
+
+  .custom-card:active {
+      transform: translateY(-5px) scale(0.98);
+      box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.25);
+  }
+
+  .btn-save {
+    font-size: 20px; 
+    font-weight: 600; 
+    border-radius: 20px;
+  }
+
+  .btn {
+    border-radius: 20px;
+  }

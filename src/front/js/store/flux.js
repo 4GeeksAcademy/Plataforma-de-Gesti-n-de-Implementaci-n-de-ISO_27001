@@ -184,7 +184,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				return true;
 			},
-
 			createProject: async (projectName, companyName, projectDescription, startDate) => {
 				const store = getStore();
 				
@@ -213,7 +212,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error("Error al crear el proyecto:", error);
 					return false;
 				}
-			}, getIsos: async () =>{
+			}, 
+			getIsos: async () =>{
 				const response = await fetch(backendURL + "/testing")
 				if (response.ok){
 					const data = await response.json()
@@ -230,7 +230,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const info = store.ISOS
 				let subdomains  = info.filter((dominio) => dominio.father == fatherID)
 				return subdomains
-			},getSubDomainInfo: (subDomainID) =>{
+			},
+			getSubDomainInfo: (subDomainID) =>{
 				let {ISOS} = getStore()
 				let subDomain = ISOS.find((iso) => iso.id == parseInt(subDomainID))
 				let domain = ISOS.find((iso) => iso.id == parseInt(subDomain.father))
@@ -241,6 +242,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					subDominio: subDomain.title,
 					requerimientos: requirements 
 				}
+			
 
 			},
 			
@@ -277,13 +279,136 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 				return true;
-			}
+			},
+			getCurrentUser: async () => {
+				const { accessToken } = getStore();
+				if (!accessToken) return;
 			
+				try {
+					const response = await fetch(`${backendURL}/user/profile`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${accessToken}`,
+							"Content-Type": "application/json",
+						},
+					});
+			
+					if (response.ok) {
+						const user = await response.json();
+						setStore({ user });
+					} else {
+						console.log("Error al obtener usuario:", response.status);
+					}
+				} catch (error) {
+					console.error("Error en getCurrentUser:", error);
+				}
+			}, //llama a endpoint /user/profile con el token en el header para obtener la información del usuario (nombre, etc.)
+			 
+			logout: () => {
+				setStore({ accessToken: null, user: null }); // Limpia el estado del token y usuario
+				localStorage.removeItem("accessToken"); // Limpia el token del almacenamiento local
+			},
+
+			forgotPassword: async (email) => {
+                try {
+                    const response = await fetch(backendURL +"/forgotpassword", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ email: email }), 
+                    });
+
+                    if (!response.ok) {
+                        console.log("Error: " + response.status);
+                        const errorData = await response.json();
+                        setStore({
+                            message: null,
+                            error: errorData.msg || "Error desconocido",
+                        });
+                        return false;
+                    }
+
+                    const data = await response.json();
+                    if (data.msg) {
+                        setStore({
+                            message: data.msg,
+                            error: null,
+                        });
+                        return true;
+                    }
+                } catch (err) {
+                    console.error("Error en forgotPassword:", err);
+                    setStore({
+                        message: null,
+                        error: "Ocurrió un error al procesar la solicitud.",
+                    });
+                }
+                return false;
+            },
+			changePassword: async (currentPassword, newPassword, confirmPassword, token) => {
+				// Verifica que las contraseñas nuevas coincidan
+				if (newPassword !== confirmPassword) {
+					setStore({
+						message: null,
+						error: "Las contraseñas nuevas no coinciden.",
+					});
+					return false;
+				}
+				// Verifica que la nueva contraseña tenga al menos 6 caracteres
+				if (newPassword.length < 6) {
+					setStore({
+						message: null,
+						error: "La nueva contraseña debe tener al menos 6 caracteres.",
+					});
+					return false;
+				}
+				try {
+					const response = await fetch(backendURL + "/changepassword", {
+						method: "PATCH",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${token}`, // Se envía el token en el encabezado
+						},
+						body: JSON.stringify({
+							current_password: currentPassword,
+							new_password: newPassword,
+						}),
+					});
+			
+					if (!response.ok) {
+						console.log("Error: " + response.status);
+						const errorData = await response.json();
+						setStore({
+							message: null,
+							error: errorData.msg || "Error desconocido",
+						});
+						return false;
+					}
+			
+					const data = await response.json();
+					if (data.msg) {
+						setStore({
+							message: data.msg,
+							error: null,
+						});
+						return true;
+					}
+				} catch (err) {
+					console.error("Error en changePassword:", err);
+					setStore({
+						message: null,
+						error: "Ocurrió un error al procesar la solicitud.",
+					});
+				}
+				return false;
+			}
+		
 			
 
 			
 		}
 	};
 };
-
 export default getState;
+
