@@ -205,3 +205,24 @@ class TokenBlockedList(db.Model):
     def __init__(self, jti, type):
         self.jti = jti
         self.type = type
+
+class ProjectContextResponse(db.Model):
+    __tablename__ = 'project_context_response'
+    id = db.Column(db.Integer, primary_key=True)
+    project_id = db.Column(db.Integer, db.ForeignKey('project.id'), nullable=False)
+    subdomain_id = db.Column(db.Integer, db.ForeignKey('isos.id'), nullable=False)
+    response = db.Column(db.String(50), nullable=False)  # Respuesta del select
+    comment = db.Column(db.Text, nullable=True)         # Comentario del usuario
+
+    # Relaciones
+    project = db.relationship('Project', backref='context_responses')
+    subdomain = db.relationship('Iso', backref='context_responses')
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "project_id": self.project_id,
+            "subdomain_id": self.subdomain_id,
+            "response": self.response,
+            "comment": self.comment,
+        }

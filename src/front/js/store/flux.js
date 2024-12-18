@@ -242,9 +242,44 @@ const getState = ({ getStore, getActions, setStore }) => {
 					subDominio: subDomain.title,
 					requerimientos: requirements 
 				}
+			
+
+			},
+			
+			getProjectResponses: async (projectId) => {
+				const response = await fetch(`${backendURL}/project/${projectId}/responses`, {
+					method: "GET",
+					headers: {
+						"Authorization": `Bearer ${getStore().accessToken}`,
+						"Content-Type": "application/json"
+					}
+				});
+				if (!response.ok) {
+					console.log("Error al obtener las respuestas del proyecto");
+					return [];
+				}
+				const data = await response.json();
+				setStore({ projectResponses: data });
+				return data;
 			},
 
-
+			saveProjectResponse: async (projectId, subdomainId, response, comment) => {
+				const body = { subdomain_id: subdomainId, response, comment };
+				console.log("Token en la solicitud:", getStore().accessToken);
+				const res = await fetch(`${backendURL}/project/${projectId}/response`, {
+					method: "POST",
+					headers: {
+						"Authorization": `Bearer ${getStore().accessToken}`,
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify(body)
+				});
+				if (!res.ok) {
+					console.log("Error al guardar la respuesta del proyecto");
+					return false;
+				}
+				return true;
+			},
 			getCurrentUser: async () => {
 				const { accessToken } = getStore();
 				if (!accessToken) return;
@@ -369,9 +404,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 				}
 				return false;
-			}			
+
+			}
+		
+			
+
+			
+
 		}
 	};
 };
-
 export default getState;
+

@@ -26,7 +26,7 @@ export const ProjectList = () => {
   };
 
   const handleProjectClick = (projectId) => {
-      navigate(`/project/${projectId}`);
+    navigate(`/main/${projectId}`);
   };
 
   const handleAddProject = () => {
@@ -56,7 +56,7 @@ export const ProjectList = () => {
                               <p>{project.description}</p>
                               <p>Estado: {project.status}</p>                              
                             </div>
-                            <button onClick={() => handleDeleteProject(project.id)} className="delete-button">Eliminar</button>
+                            <button onClick={(e) =>{e.stopPropagation(); handleDeleteProject(project.id);}} className="delete-button">Eliminar</button>
                         </div>
                       ))
                   ) : (

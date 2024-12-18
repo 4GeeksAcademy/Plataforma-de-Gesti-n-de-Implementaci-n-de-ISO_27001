@@ -1,8 +1,12 @@
 import React from "react";
 import { FormRequiriment } from "./formRequirement";
-import "../../styles/main.css";
 
-export const FormMain = ({ info }) => {
+
+export const FormMain = ({ info, projectId, existingResponses }) => {
+   if (!info || !info.dominio || !info.subDominio || !Array.isArray(info.requerimientos)) {
+      return <div>Error: La información proporcionada no es válida.</div>;
+  }
+
 
    return (
       <div className="container0">
@@ -23,13 +27,14 @@ export const FormMain = ({ info }) => {
 
          {/* Descripción del requerimiento */}
          <div className="row mb-3">
-            <div className="col-12 text-start">
-               <h5 className="h5-custom">
-                  {info.requerimientos.map((requerimiento, index) =>{
-                     return <FormRequiriment requirement={requerimiento} key={index+requerimiento.id}/>
-                  })}
-
-               </h5>
+            <div className="col-12 text-center">
+               {info.requerimientos.map((requerimiento, index) =>(
+                  <FormRequiriment requirement={requerimiento} projectId={projectId}
+                  existingResponse={existingResponses?.find(
+                     (response) => response.subdomain_id === requerimiento.id
+                 )}
+                  key={index+requerimiento.id}/>
+               ))}
             </div>
          </div>
       </div>
