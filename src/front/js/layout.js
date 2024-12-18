@@ -50,6 +50,8 @@ const Layout = () => {
                         <Route element={<FormProject />} path="/addproject" />
                         <Route element={<ResetPassword />} path="/reset-password"/>
                         <Route element={<ChangePassword />} path="/change-password" />
+                        <Route element={<Main />} path="/main/:projectId/*" />
+
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
                     <Footer />

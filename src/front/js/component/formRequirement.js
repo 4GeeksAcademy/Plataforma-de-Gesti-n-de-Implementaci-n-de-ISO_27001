@@ -1,6 +1,32 @@
-import React from "react";
+import React, { useEffect, useContext, useState } from "react";
+import { Context } from "../store/appContext";
 
-export const FormRequiriment = ({requirement}) => {
+export const FormRequiriment = ({requirement, projectId, existingResponse}) => {
+   const { actions } = useContext(Context);
+   const [response, setResponse] = useState("Desconocido");
+   const [comment, setComment] = useState("");
+
+   useEffect(() => {
+      setResponse(existingResponse?.response || "Desconocido");
+      setComment(existingResponse?.comment || "");
+  }, [existingResponse]);
+  
+
+   const saveResponse = async () => {
+      if (!projectId) {
+          console.error("Error: projectId está indefinido");
+          return;
+      }
+  
+      try {
+          const success = await actions.saveProjectResponse(projectId, requirement.id, response, comment);
+          if (success) alert("Respuesta guardada correctamente");
+      } catch (error) {
+          console.error("Error al guardar la respuesta:", error);
+      }
+  };
+  console.log("FormRequirement.js - projectId:", projectId);
+
    return (
     <div>
         <h5>{requirement.title}</h5>
@@ -8,7 +34,11 @@ export const FormRequiriment = ({requirement}) => {
          {/* Selector desplegable */}
          <div className="row mb-3">
             <div className="col-12 d-flex justify-content-center">
-               <select className="form-select" aria-label="Default select example" defaultValue="1" style={{ maxWidth: "300px" }}>
+               <select className="form-select" 
+                  /*aria-label="Default select example"*/
+                  value={response} 
+                  onChange={(e) => setResponse(e.target.value)} 
+                  style={{ maxWidth: "300px" }}>
                   <option value="1">Desconocido</option>
                   <option value="2">Inexistente</option>
                   <option value="3">Inicial</option>
@@ -26,13 +56,20 @@ export const FormRequiriment = ({requirement}) => {
             <div className="col-6 d-flex justify-content-center">
                <div className="w-100">
                   <label htmlFor="exampleFormControlTextarea1" className="form-label">Comentarios</label>
-                  <textarea className="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                  <textarea
+                            className="form-control"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                  ></textarea>
                </div>
             </div>
             <div className="col-6 d-flex justify-content-center">
                <div className="w-100">
                   <label htmlFor="exampleFormControlTextarea2" className="form-label">Lista de documentos</label>
                   <textarea className="form-control" id="exampleFormControlTextarea2" rows="3"></textarea>
+                  <button className="btn btn-primary" onClick={saveResponse}>
+                    Guardar
+                  </button>
                </div>
             </div>
          </div>

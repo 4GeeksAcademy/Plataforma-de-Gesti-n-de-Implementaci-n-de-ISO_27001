@@ -6,7 +6,7 @@ import datetime, cloudinary
 import uuid
 from flask import Flask, request, jsonify, url_for, json, Blueprint
 
-from api.models import db, User, Role, Project, Iso, UserProjectRole, TokenBlockedList
+from api.models import db, User, Role, Project, Iso, UserProjectRole, TokenBlockedList, ProjectContextResponse
 from datetime import timedelta
 
 from api.utils import generate_sitemap, APIException
@@ -581,3 +581,63 @@ def create_context():
     except Exception as e:
         print (e)
         return jsonify({"error": str(e)}), 500
+    
+@api.route('/project/<int:project_id>/responses', methods=['GET'])
+@jwt_required()
+def get_project_responses(project_id):
+    project = Project.query.get(project_id)
+    if not project:
+        return jsonify({"msg": "Proyecto no encontrado"}), 404
+
+    responses = ProjectContextResponse.query.filter_by(project_id=project_id).all()
+    return jsonify([response.serialize() for response in responses]), 200
+
+
+@api.route('/project/<int:project_id>/response', methods=['POST'])
+@jwt_required()
+def save_project_response(project_id):
+    try:
+        data = request.get_json()
+        print("Datos recibidos:", data) 
+        data = request.get_json()
+        subdomain_id = data.get('subdomain_id')
+        response = data.get('response')
+        comment = data.get('comment')
+
+        if not subdomain_id or not response:
+            return jsonify({"msg": "Faltan datos necesarios"}), 400
+        if not isinstance(project_id, int):
+            return jsonify({"msg": "Invalid project ID"}), 400
+        
+        # Verificar que el proyecto y el subdominio existan
+        project = Project.query.get(project_id)
+        subdomain = Iso.query.get(subdomain_id)
+
+        if not project or not subdomain:
+            return jsonify({"msg": "Proyecto o subdominio no encontrado"}), 404
+
+        # Buscar si ya existe una respuesta para ese proyecto y subdominio
+        existing_response = ProjectContextResponse.query.filter_by(
+            project_id=project_id,
+            subdomain_id=subdomain_id
+        ).first()
+
+        if existing_response:
+            # Actualizar respuesta existente
+            existing_response.response = response
+            existing_response.comment = comment
+        else:
+            # Crear nueva respuesta
+            new_response = ProjectContextResponse(
+                project_id=project_id,
+                subdomain_id=subdomain_id,
+                response=response,
+                comment=comment
+            )
+            db.session.add(new_response)
+
+        db.session.commit()
+        return jsonify({"msg": "Respuesta guardada correctamente"}), 200
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"msg": str(e)}), 500
