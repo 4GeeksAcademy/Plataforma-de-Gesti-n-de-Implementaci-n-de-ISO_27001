@@ -355,6 +355,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					return false;
 				}
+			
 				// Verifica que la nueva contraseña tenga al menos 6 caracteres
 				if (newPassword.length < 6) {
 					setStore({
@@ -363,6 +364,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					return false;
 				}
+			
 				try {
 					const response = await fetch(backendURL + "/changepassword", {
 						method: "PATCH",
@@ -402,11 +404,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 				}
 				return false;
+
 			}
 		
 			
 
 			
+
 		}
 	};
 };

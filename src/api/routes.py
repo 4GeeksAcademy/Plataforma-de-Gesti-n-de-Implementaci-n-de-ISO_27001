@@ -40,6 +40,7 @@ CORS(api)
 
 ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png', 'gif'}
 
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -111,8 +112,7 @@ def forgot_password():
             return jsonify({"msg": "El correo electrónico no está registrado"}), 404
         reset_token = create_access_token(identity=user.id, additional_claims={"Type": "Password"}, expires_delta=timedelta(minutes=15))
         # reset_url = f"https://literate-waffle-rrqp9gxq9wp259jx-3001.app.github.dev/api/reset-password/{reset_token}"
-        reset_url = f"https://humble-doodle-w6jvjjrq96p3grjg-3000.app.github.dev/change-password/?token={reset_token}"
-
+        reset_url = f"https://ideal-goldfish-w9pg6746rp7hxpx-3000.app.github.dev/change-password/?token={reset_token}"
         msg = Message("CerBro - Recuperación de contraseña", recipients=[user.email])
         msg.body = f"Hola {user.full_name},\n\nHaz clic en el siguiente enlace para restablecer tu contraseña:\n{reset_url}\n\nEste enlace expira en 15 minutos."
         mail.send(msg)
