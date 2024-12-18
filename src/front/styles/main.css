@@ -1,0 +1,56 @@
+:root {
+    --background-sand: #F8F1E5;
+    --background-sand1:   #E8E2D6;
+    --background-sand2:   #DBD5CA;
+    --background-sand3:   #CCC6BC;
+    --navy: #1A2B40;
+    --navy-medium: #404E66;
+    --navy-light: #748CAB;
+    --orange: #D35400;
+  
+    --fuente-texto: 'Open Sans', sans-serif;
+    --fuente-titulos: 'Montserrat', sans-serif;
+  }
+
+
+.h1-custom {
+    background-color: var(--background-sand3);
+    padding: 2%;
+    margin: 0;
+    color: var(--navy); /* Asegura que el texto sea legible */
+    font-size: 2.5rem; /* Tamaño de fuente moderno */
+    font-weight: 600; /* Peso de fuente para darle más énfasis */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Sombra suave para el texto */
+
+}
+
+.h3-custom {
+  background-color: var(--background-sand2);
+  padding: 1%;
+  color: var(--navy); /* Asegura que el texto sea legible */
+  font-size: 2rem; /* Tamaño de fuente moderno */
+  font-weight: 600; /* Peso de fuente para darle más énfasis */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Sombra suave para el texto */
+  margin: 0;
+}
+
+.h5-custom {
+  font-size: 1.4rem; /* Tamaño de fuente moderno */
+  font-weight: 600; /* Peso de fuente para darle más énfasis */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Sombra suave para el texto */
+  margin: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0; /* Elimina márgenes para asegurar el diseño correcto */
+}
+
+.main-content {
+  flex: 1; /* Toma el espacio restante para empujar el footer hacia abajo */
+  padding: 20px; /* Opcional, para agregar espacio al contenido */
+  overflow-y: auto; /* Permite el scrollbar si el contenido excede la altura */
+}
+
