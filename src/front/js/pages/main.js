@@ -32,17 +32,15 @@ export const Main = () => {
             <Sidebar/>
             <div>
                 <Routes>
-                    {rutas && (
-                        rutas.map((ruta, index) => {
-                            let subDomainInfo = actions.getSubDomainInfo(ruta.split("-")[1])
-                            return <Route path={`/project/${projectid}/${ruta}`} element={<FormMain info={subDomainInfo} key={`${ruta}-${index}`}/>}/>
-                        }
-                        )
-                    )}
+                {rutas && (
+                    rutas.map((ruta, index) => {
+                        let subDomainInfo = actions.getSubDomainInfo(ruta.split("-")[1])
+                        return <Route key={`${ruta}-${index}`} path={ruta} element={<FormMain info={subDomainInfo}/>} />
+                    })
+                )}
                     <Route  path="/" element={<Default/>}/>
                 </Routes>
             </div>
         </div>
     )
-
 }
