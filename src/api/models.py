@@ -30,7 +30,6 @@ class User(db.Model):
             "id": self.id,
             "email": self.email,
             "full_name": self.full_name,
-
             "is_active": self.is_active,
             "roles": [role_user.role.serialize() for role_user in self.user_roles],
             "registered_on": self.registered_on

@@ -184,7 +184,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				return true;
 			},
-
 			createProject: async (projectName, companyName, projectDescription, startDate) => {
 				const store = getStore();
 				
@@ -213,7 +212,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error("Error al crear el proyecto:", error);
 					return false;
 				}
-			}, getIsos: async () =>{
+			}, 
+			getIsos: async () =>{
 				const response = await fetch(backendURL + "/testing")
 				if (response.ok){
 					const data = await response.json()
@@ -230,7 +230,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const info = store.ISOS
 				let subdomains  = info.filter((dominio) => dominio.father == fatherID)
 				return subdomains
-			},getSubDomainInfo: (subDomainID) =>{
+			},
+			getSubDomainInfo: (subDomainID) =>{
 				let {ISOS} = getStore()
 				let subDomain = ISOS.find((iso) => iso.id == parseInt(subDomainID))
 				let domain = ISOS.find((iso) => iso.id == parseInt(subDomain.father))
@@ -241,8 +242,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					subDominio: subDomain.title,
 					requerimientos: requirements 
 				}
-
-
 			},
 			forgotPassword: async (email) => {
                 try {
@@ -290,7 +289,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					return false;
 				}
-			
 				// Verifica que la nueva contraseña tenga al menos 6 caracteres
 				if (newPassword.length < 6) {
 					setStore({
@@ -299,7 +297,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					return false;
 				}
-			
 				try {
 					const response = await fetch(backendURL + "/changepassword", {
 						method: "PATCH",
@@ -339,8 +336,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 				}
 				return false;
-			},
-			
+			}
 			
 			
 		}
