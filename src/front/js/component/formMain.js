@@ -2,8 +2,6 @@ import React from "react";
 import { FormRequiriment } from "./formRequirement";
 export const FormMain = ({ info }) => {
 
-
-
    return (
       <div className="container-fluid justify-content-center">
          {/* Título principal */}
@@ -28,7 +26,6 @@ export const FormMain = ({ info }) => {
                })}
             </div>
          </div>
-         
       </div>
    );
 };

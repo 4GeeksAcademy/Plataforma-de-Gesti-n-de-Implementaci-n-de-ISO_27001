@@ -1,4 +1,16 @@
 .sidebar {
+  background-color: white;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.sidebar-ul {
+  background-color: white;
+  list-style-type: none; 
+  margin-left: 0;
+  padding-left: 0;
+}
+/* .sidebar {
     position: fixed;
     top: 0;
     left: 0;
@@ -32,4 +44,4 @@
   
   .navbar-toggler {
     border: none;
-  }
+  } */

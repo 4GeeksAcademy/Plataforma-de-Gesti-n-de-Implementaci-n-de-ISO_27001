@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 export const ChangePassword = () => {
 
-
   return (
     <div className="container">
       <h1>Cambiar Contraseña</h1>

@@ -12,14 +12,53 @@
 
 
 .container {
-    max-width: 100%;
     display: flex;
-    margin: 0;
-    padding: 0;
+    flex-direction: row;
+    height: 100vh;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
 }
 
 .left-container {
     flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #001f3f;
+    color: #fff;
+    height: 100vh;
+}
+
+.left-container-logo {
+    max-width: 60%; 
+    height: auto;
+}
+
+.right-container {
+    flex: 1; 
+    display: flex;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    background-color: #f8f9fa; 
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+}
+
+/* 
+.container {
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: red;
+}
+
+
+.left-container {
+    flex: 1; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -31,21 +70,23 @@
 }
 
 .right-container {
-    flex: 1;
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     background-color: var(--background-sand);
-    padding-top: 60px;
-    padding-bottom: 60px;
-    padding-right: 200px;
-    padding-left: 200px;
+    padding: 40px; 
 }
 
-textarea {
-    height: 100px !important;
+form {
+    width: 100%; 
+    max-width: 400px; 
 }
-
 
 .form-control:focus {
     border-color: var(--orange); 
     box-shadow: 0 0 5px var(--orange); 
     outline: none;
-}
+} 
+ */
