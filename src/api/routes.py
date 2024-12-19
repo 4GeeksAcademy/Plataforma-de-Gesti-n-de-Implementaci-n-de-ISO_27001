@@ -931,3 +931,60 @@ def add_user_to_project(project_id):
         print(e)
         return jsonify({"msg": "Error interno del servidor", "error": str(e)}), 500
 
+@api.route('/project/<int:project_id>/response/uploadfile', methods=['PUT'])
+@jwt_required()
+def upload_project_response_file(project_id):
+    try:
+        # Verificar la autenticación del usuario
+        user_id = get_jwt_identity()
+        user = User.query.filter_by(id=user_id).first()
+        if not user:
+            return jsonify({"msg": "Usuario no encontrado"}), 404
+
+        # Verificar que el proyecto exista
+        project = Project.query.get(project_id)
+        if not project:
+            return jsonify({"msg": "Proyecto no encontrado"}), 404
+
+        # Verificar que el archivo esté presente en la solicitud
+        if "file" not in request.files:
+            return jsonify({"msg": "No se encontró ningún archivo en la solicitud"}), 400
+
+        file = request.files["file"]
+        if file.filename == "":
+            return jsonify({"msg": "El archivo no tiene nombre"}), 400
+
+        # Validar el tipo de archivo permitido
+        if not allowed_file(file.filename):
+            return jsonify({"msg": "Tipo de archivo no permitido"}), 400
+
+        # Buscar la respuesta existente para el proyecto
+        response = ProjectContextResponse.query.filter_by(project_id=project_id).first()
+        if not response:
+            return jsonify({"msg": "No se encontró una respuesta para este proyecto"}), 404
+
+        # Subir el archivo a Cloudinary
+        temp = NamedTemporaryFile(delete=False)
+        file.save(temp.name)
+        filename = f"projectFiles/{project_id}_{uuid.uuid4()}"
+        upload_result = cloudinary.uploader.upload(
+            temp.name,
+            public_id=filename,
+            folder="projectFiles",
+            resource_type="auto",
+            access_mode="public"
+        )
+        project_file_url = upload_result["secure_url"]
+
+        # Actualizar el campo project_file en la base de datos
+        response.project_file = project_file_url
+        db.session.commit()
+
+        return jsonify({
+            "msg": "Archivo subido y guardado correctamente",
+            "project_file_url": project_file_url
+        }), 200
+
+    except Exception as ex:
+        print("Error al subir el archivo:", ex)
+        return jsonify({"msg": "Error al subir el archivo"}), 500
