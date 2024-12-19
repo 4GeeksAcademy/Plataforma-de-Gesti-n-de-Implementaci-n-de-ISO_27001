@@ -191,7 +191,6 @@ class Answer(db.Model):
     deleted_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    project_file = db.Column(db.String(3000), nullable=True)
     
     # Clave foránea de Question
     question_id = db.Column(db.Integer, db.ForeignKey('questions.id'), nullable=False)
@@ -213,6 +212,8 @@ class ProjectContextResponse(db.Model):
     subdomain_id = db.Column(db.Integer, db.ForeignKey('isos.id'), nullable=False)
     response = db.Column(db.String(50), nullable=False)  # Respuesta del select
     comment = db.Column(db.Text, nullable=True)         # Comentario del usuario
+    project_file = db.Column(db.String(3000), nullable=True)
+
 
     # Relaciones
     project = db.relationship('Project', backref='context_responses')
@@ -225,4 +226,5 @@ class ProjectContextResponse(db.Model):
             "subdomain_id": self.subdomain_id,
             "response": self.response,
             "comment": self.comment,
+            "project_file": self.comment,
         }

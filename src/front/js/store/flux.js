@@ -282,6 +282,40 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				return true;
 			},
+
+			saveProjectFile: async (projectId, selectedFiles) => {
+				if (selectedFiles.length === 0) {
+				   alert("Por favor, selecciona un archivo antes de guardar.");
+				   return false;
+				}
+			 
+				const formData = new FormData();
+				formData.append("file", selectedFiles[0]); 
+			 
+				try {
+				   const response = await fetch(`${backendURL}/project/${projectId}/response/uploadfile`, {
+					  method: "PUT",
+					  headers: {
+						"Authorization": `Bearer ${getStore().accessToken}`
+					  },
+					  body: formData
+				   });
+			 
+				   const data = await response.json();
+				   if (response.ok) {
+					  alert("Archivo subido correctamente");
+					  console.log("Archivo URL:", data.project_file_url);
+					  return data.project_file_url;
+				   } else {
+					  alert("Error al subir el archivo: " + data.msg);
+					  return false;
+				   }
+				} catch (error) {
+				   console.error("Error en la solicitud:", error);
+				   alert("Hubo un problema al subir el archivo.");
+				   return false;
+				}
+			},			
 			getCurrentUser: async () => {
 				const { accessToken } = getStore();
 				if (!accessToken) return;
