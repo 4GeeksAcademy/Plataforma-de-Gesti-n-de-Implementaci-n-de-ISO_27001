@@ -7,14 +7,15 @@ import { ManageProjectRoles } from "../component/ManageProjectRoles";
 import { Context } from "../store/appContext";
 import { Default } from "./default";
 import "../../styles/main.css";
-
+import "../../styles/manageProjectRoles.css";
 
 export const Main = () => {
     const { projectId } = useParams();
     const {store, actions} = useContext(Context);
     const[rutas, setRutas] = useState([]);
     const [projectResponses, setProjectResponses] = useState([]);
-    console.log("Main.js - projectId:", projectId);
+    const [isRolesVisible, setIsRolesVisible] = useState(false);
+    const [isProjectLeader, setIsProjectLeader] = useState(false);
 
 
     useEffect(()=>{
@@ -52,7 +53,12 @@ export const Main = () => {
             
         }, [projectId]);
         
-
+        useEffect(() => {
+            // Determinar si el usuario es jefe de proyecto
+            const currentProject = store.projects?.find((project) => project.id === parseInt(projectId));
+            const isLeader = store.user?.id === currentProject?.project_leader_id;
+            setIsProjectLeader(isLeader);
+        }, [store.user, store.projects, projectId]);
         
     return (
 
@@ -84,11 +90,25 @@ export const Main = () => {
                 </Routes>
             </div>
             {/* Componente de gestión de roles en la parte derecha */}
-        {store.user?.id === store.projects?.find(project => project.id === parseInt(projectId))?.project_leader_id && (
-            <div style={{ flex: "1", backgroundColor: "#f8f9fa", padding: "1rem", overflowY: "auto" }}>
-                <ManageProjectRoles projectId={projectId} />
-            </div>
-        )}
+            {/* Renderizar solo si es el jefe del proyecto */}
+            {isProjectLeader && (
+                <>
+                    <button
+                        onClick={() => setIsRolesVisible(!isRolesVisible)}
+                        className="floating-button"
+                    >
+                        {isRolesVisible
+                            ? "Ocultar Gestión de Usuarios y Roles"
+                            : "Mostrar Gestión de Usuarios y Roles"}
+                    </button>
+
+                    {isRolesVisible && (
+                        <div className="floating-container">
+                            <ManageProjectRoles projectId={projectId} />
+                        </div>
+                    )}
+                </>
+            )}
         </div>
     )
 }

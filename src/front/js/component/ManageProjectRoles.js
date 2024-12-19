@@ -7,6 +7,8 @@ export const ManageProjectRoles = ({ projectId }) => {
     const [email, setEmail] = useState("");
     const [role, setRole] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const [isExpanded, setIsExpanded] = useState(false);
+    
 
     useEffect(() => {
         actions.getAllUsers();
@@ -82,38 +84,81 @@ export const ManageProjectRoles = ({ projectId }) => {
     };
 
     return (
-        <div>
-            <h3>Gestión de Usuarios y Roles</h3>
-            <div>
-                {projectUsers.map(({ user, role }) => (
-                    <div key={user.id}>
-                        <p>
-                            {user.full_name} ({user.email}) - {role?.name || "Sin rol asignado"}
-                        </p>
-                        <button onClick={() => handleDeleteUser(user.id)}>Eliminar</button>
-                        <select value={role?.name || ""} onChange={(e) => handleUpdateRole(user.id, e.target.value)}>
-                            <option value="Consultor">Consultor</option>
-                            <option value="Visitante">Visitante</option>
-                            <option value="Jefe de Proyecto">Jefe de Proyecto</option>
-                        </select>
+        <div style={{ border: "1px solid #ddd", borderRadius: "8px", padding: "1rem", backgroundColor: "#f9f9f9" }}>
+            
+                    <h5 className="text-center mb-3">Gestión de Usuarios y Roles</h5>
+
+                    {/* Tabla de usuarios */}
+                    <table className="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>Rol</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {projectUsers.map(({ user, role }) => (
+                                <tr key={user.id}>
+                                    <td>{user.full_name}</td>
+                                    <td>{user.email}</td>
+                                    <td>
+                                        <select
+                                            className="form-select"
+                                            value={role?.name || ""}
+                                            onChange={(e) => handleUpdateRole(user.id, e.target.value)}
+                                        >
+                                            <option value="Consultor">Consultor</option>
+                                            <option value="Visitante">Visitante</option>
+                                            <option value="Jefe de Proyecto">Jefe de Proyecto</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button
+                                            className="btn btn-danger btn-sm"
+                                            onClick={() => handleDeleteUser(user.id)}
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    {/* Formulario para agregar usuarios */}
+                    <div className="mt-4">
+                        <h6>Agregar Usuario al Proyecto</h6>
+                        <div className="mb-3">
+                            <input
+                                type="email"
+                                className="form-control"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Correo del usuario"
+                            />
+                        </div>
+                        <div className="mb-3">
+                            <select
+                                className="form-select"
+                                value={role}
+                                onChange={(e) => setRole(e.target.value)}
+                            >
+                                <option value="">Seleccione un rol</option>
+                                <option value="Consultor">Consultor</option>
+                                <option value="Visitante">Visitante</option>
+                            </select>
+                        </div>
+                        <button className="btn btn-success w-100" onClick={handleAddUser}>
+                            Agregar Usuario
+                        </button>
                     </div>
-                ))}
-            </div>
-            <div>
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Correo del usuario"
-                />
-                <select value={role} onChange={(e) => setRole(e.target.value)}>
-                    <option value="">Seleccione un rol</option>
-                    <option value="Consultor">Consultor</option>
-                    <option value="Visitante">Visitante</option>
-                </select>
-                <button onClick={handleAddUser}>Agregar Usuario</button>
-            </div>
-            {errorMessage && <p>{errorMessage}</p>}
-        </div>
-    );
+
+                    {/* Mensajes de error */}
+                    {errorMessage && <p className="text-danger mt-3">{errorMessage}</p>}
+                </div>
+            )
+       
+    
 };
