@@ -167,6 +167,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				});
 				if (!response.ok) {
 					console.log("Error: " + response.status);
+					console.log("JWT Token:", getStore().accessToken);
+
 					return false;
 				}
 				return true;

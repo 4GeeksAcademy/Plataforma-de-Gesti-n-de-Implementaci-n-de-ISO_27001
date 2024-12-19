@@ -6,7 +6,7 @@ import datetime, cloudinary
 import uuid
 from flask import Flask, request, jsonify, url_for, json, Blueprint
 
-from api.models import db, User, Role, Project, Iso, UserProjectRole, TokenBlockedList, ProjectContextResponse
+from api.models import db, User, Role, Project, Iso, UserProjectRole, TokenBlockedList, ProjectContextResponse,  RoleUser
 from datetime import timedelta
 
 from api.utils import generate_sitemap, APIException
@@ -165,18 +165,21 @@ def update_email_settings():
 def project_create():
     try:
         body = request.get_json()
-
         required_fields = ["projectName", "companyName", "projectDescription", "startDate"]
+        
         for field in required_fields:
             if field not in body or body[field] is None:
                 return jsonify({"msg": f"Debe especificar un {field}"}), 400
 
+        # Verificar si el proyecto ya existe
         project = Project.query.filter_by(name=body["projectName"]).first()
         if project is not None:
             return jsonify({"msg": "El proyecto ya existe"}), 400
-        
+
+        # Obtener el ID del usuario actual
         user_id = get_jwt_identity()
 
+        # Crear el proyecto
         new_project = Project(
             name=body["projectName"],
             description=body.get("projectDescription", ""),
@@ -184,13 +187,25 @@ def project_create():
             start_date=body["startDate"],
             project_leader_id=user_id
         )
-
         db.session.add(new_project)
+        db.session.commit()
+
+        # Asignar el rol de Líder de Proyecto
+        project_leader_role = Role.query.filter_by(name='Líder de Proyecto').first()
+        if not project_leader_role:
+            project_leader_role = Role(name='Líder de Proyecto', description='Rol para líderes de proyecto')
+            db.session.add(project_leader_role)
+            db.session.commit()
+
+        # Crear relación RoleUser
+        role_user = RoleUser(user_id=user_id, role_id=project_leader_role.id, is_global=False)
+        db.session.add(role_user)
         db.session.commit()
 
         return jsonify({"msg": "Proyecto creado", "project": new_project.serialize()}), 200
     except Exception as e:
         return jsonify({"msg": str(e)}), 500
+
 
 
 
@@ -203,44 +218,51 @@ def register_user():
         if field not in body or not body[field]:
             return jsonify({"msg": f"Falta el campo: {field}"}), 400
     
+    # Verificar si el usuario ya existe
     existing_user = User.query.filter_by(email=body["email"]).first()
     if existing_user:
         return jsonify({"msg": "El usuario ya existe"}), 400
 
+    # Crear el nuevo usuario
     hashed_password = bcrypt.generate_password_hash(body["password"]).decode("utf-8")
-
     new_user = User(
         email=body["email"],
         password=hashed_password,
         full_name=body["full_name"],
         is_active=True,
-        
     )
-
-    # Si es el primer usuario, asignarle rol de Administrador de Plataforma
-    if User.query.count() == 0:
-
-        # Verificar si el rol "Administrador de Plataforma" existe en la tabla `Role`
-        admin_role = Role.query.filter_by(name='Administrador de Plataforma').first()
-        if not admin_role:
-            # Crear el rol si no existe
-            admin_role = Role(name='Administrador de Plataforma', description='Acceso completo a la plataforma')
-            db.session.add(admin_role)
-            db.session.commit()
-
-        # Asignar el rol "Administrador de Plataforma" al primer usuario
-        new_user.global_role = admin_role
-    
     db.session.add(new_user)
     db.session.commit()
 
+    # Asignar roles
+    if User.query.count() == 1:  # Primer usuario registrado
+        admin_role = Role.query.filter_by(name='Administrador de Plataforma').first()
+        if not admin_role:
+            admin_role = Role(name='Administrador de Plataforma', description='Acceso completo a la plataforma')
+            db.session.add(admin_role)
+            db.session.commit()
+        
+        # Crear relación RoleUser
+        role_user = RoleUser(user_id=new_user.id, role_id=admin_role.id, is_global=True)
+        db.session.add(role_user)
+        db.session.commit()
+    else:  # Usuarios subsecuentes
+        default_role = Role.query.filter_by(name='Usuario Básico').first()
+        if not default_role:
+            default_role = Role(name='Usuario Básico', description='Rol básico para nuevos usuarios')
+            db.session.add(default_role)
+            db.session.commit()
+        
+        # Crear relación RoleUser
+        role_user = RoleUser(user_id=new_user.id, role_id=default_role.id, is_global=True)
+        db.session.add(role_user)
+        db.session.commit()
 
     return jsonify({
         "msg": "Usuario registrado exitosamente",
         "user": new_user.serialize()
     }), 200
 
-    
    
 
 @api.route("/login", methods=['POST'])
@@ -365,23 +387,42 @@ def get_user_projects():
     
     return jsonify([project.serialize() for project in user_projects]), 200
 
-
 @api.route("/projects/<int:project_id>", methods=["DELETE"])
 @jwt_required()
 def delete_project(project_id):
-    user_id = get_jwt_identity()
-    project = Project.query.get(project_id)
-    
-    if not project:
-        return jsonify({"msg": "Proyecto no encontrado"}), 404
-    
-    if project.project_leader_id != user_id:
-        return jsonify({"msg": "No tienes permisos para eliminar este proyecto"}), 403
-    
-    db.session.delete(project)
-    db.session.commit()
-    
-    return jsonify({"msg": "Proyecto eliminado exitosamente"}), 200
+    try:
+        # Obtener el usuario autenticado
+        user_id = get_jwt_identity()
+
+        # Verificar si el proyecto existe
+        project = Project.query.get(project_id)
+        if not project:
+            return jsonify({"msg": "Proyecto no encontrado"}), 404
+
+        # Verificar si el usuario tiene permisos para eliminar
+        # O es el líder del proyecto
+        is_leader = project.project_leader_id == user_id
+
+        # O tiene el rol de Líder de Proyecto en este proyecto
+        has_project_role = RoleUser.query.filter_by(
+            user_id=user_id,
+            role_id=Role.query.filter_by(name="Líder de Proyecto").first().id,
+            is_global=False
+        ).first()
+
+        if not (is_leader or has_project_role):
+            return jsonify({"msg": "No tienes permisos para eliminar este proyecto"}), 403
+
+        # Si tiene permisos, eliminar el proyecto
+        db.session.delete(project)
+        db.session.commit()
+
+        return jsonify({"msg": "Proyecto eliminado exitosamente"}), 200
+
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 500
+
+
 
 @api.route("/projects/<int:project_id>", methods=["GET"])
 @jwt_required()
