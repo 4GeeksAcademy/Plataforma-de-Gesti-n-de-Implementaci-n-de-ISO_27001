@@ -734,3 +734,157 @@ def save_project_response(project_id):
     except Exception as e:
         print("Error:", e)
         return jsonify({"msg": str(e)}), 500
+
+
+@api.route("/projects/<int:project_id>/roles", methods=["GET", "POST", "PATCH", "DELETE"])
+@jwt_required()
+def manage_project_roles(project_id):
+    user_id = int(get_jwt_identity())
+    project = Project.query.get(project_id)
+
+    # Verificar que el proyecto exista
+    if not project:
+        return jsonify({"msg": "Proyecto no encontrado"}), 404
+
+    # Verificar que el usuario sea el líder del proyecto
+    if project.project_leader_id != user_id:
+        print(f"project_leader_id: {project.project_leader_id}, user_id: {user_id}")
+        print(type(project.project_leader_id), type(user_id))
+        return jsonify({"msg": "No tienes permisos para gestionar los roles de este proyecto"}), 403
+
+    if request.method == "GET":
+        # Listar los usuarios con roles en el proyecto
+        roles = UserProjectRole.query.filter_by(project_id=project_id).all()
+        return jsonify([{
+            "user": role.user.serialize(),
+            "role": role.role.serialize()
+        } for role in roles]), 200
+
+    if request.method == "POST":
+        # Agregar un usuario al proyecto con un rol
+        body = request.get_json()
+        email = body.get("email")
+        role_name = body.get("role")
+
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return jsonify({"msg": "Usuario no encontrado"}), 404
+
+        role = Role.query.filter_by(name=role_name).first()
+        if not role:
+            return jsonify({"msg": "Rol no encontrado"}), 404
+
+        existing_role = UserProjectRole.query.filter_by(user_id=user.id, project_id=project_id).first()
+        if existing_role:
+            return jsonify({"msg": "El usuario ya forma parte del proyecto"}), 400
+
+        new_role = UserProjectRole(user_id=user.id, project_id=project_id, role_id=role.id)
+        db.session.add(new_role)
+        db.session.commit()
+
+        return jsonify({"msg": "Usuario agregado al proyecto", "user": user.serialize()}), 201
+
+    if request.method == "PATCH":
+        # Modificar el rol de un usuario en el proyecto
+        body = request.get_json()
+        user_id = body.get("user_id")
+        new_role_name = body.get("role")
+
+        role = Role.query.filter_by(name=new_role_name).first()
+        if not role:
+            return jsonify({"msg": "Rol no encontrado"}), 404
+
+        user_project_role = UserProjectRole.query.filter_by(user_id=user_id, project_id=project_id).first()
+        if not user_project_role:
+            return jsonify({"msg": "Usuario no pertenece a este proyecto"}), 404
+
+        user_project_role.role_id = role.id
+        db.session.commit()
+
+        return jsonify({"msg": "Rol del usuario actualizado"}), 200
+
+    if request.method == "DELETE":
+        # Eliminar un usuario del proyecto
+        body = request.get_json()
+        user_id = body.get("user_id")
+
+        user_project_role = UserProjectRole.query.filter_by(user_id=user_id, project_id=project_id).first()
+        if not user_project_role:
+            return jsonify({"msg": "Usuario no pertenece a este proyecto"}), 404
+
+        db.session.delete(user_project_role)
+        db.session.commit()
+
+        return jsonify({"msg": "Usuario eliminado del proyecto"}), 200
+
+@api.route('/projects/<int:project_id>/add-user', methods=['POST'])
+@jwt_required()
+def add_user_to_project(project_id):
+    try:
+        # Obtener el usuario autenticado
+        current_user_id = int(get_jwt_identity())
+        current_user = User.query.get(current_user_id)
+
+        # Verificar que el proyecto existe
+        project = Project.query.get_or_404(project_id)
+
+        # Validar que el usuario autenticado es líder del proyecto
+        if project.project_leader_id != current_user_id:
+            print(f"current_user_id: {current_user_id}, project_leader_id: {project.project_leader_id}")
+            print(type(project.project_leader_id), type(current_user_id))
+            return jsonify({"msg": "No tienes permisos para agregar usuarios a este proyecto"}), 403
+
+        # Obtener datos del cuerpo de la solicitud
+        data = request.get_json()
+        user_id = data.get("user_id")
+        role_id = data.get("role_id")
+
+        # Validar que los campos necesarios están presentes
+        if not user_id or not role_id:
+            return jsonify({"msg": "Faltan campos requeridos (user_id, role_id)"}), 400
+
+        # Convertir a enteros y verificar que los valores son válidos
+        try:
+            user_id = int(user_id)
+            role_id = int(role_id)
+        except ValueError:
+            return jsonify({"msg": "user_id y role_id deben ser enteros"}), 400
+
+        # Verificar que el usuario y el rol existen
+        user = User.query.get_or_404(user_id)
+        role = Role.query.get_or_404(role_id)
+
+        # Verificar que el usuario no está ya asignado al proyecto con el mismo rol
+        existing_role = UserProjectRole.query.filter_by(
+            user_id=user_id,
+            project_id=project_id,
+            role_id=role_id
+        ).first()
+
+        if existing_role:
+            return jsonify({"msg": "El usuario ya tiene este rol en el proyecto"}), 400
+
+        # Crear la relación en la tabla UserProjectRole
+        user_project_role = UserProjectRole(
+            user_id=user_id,
+            project_id=project_id,
+            role_id=role_id
+        )
+        db.session.add(user_project_role)
+        db.session.commit()
+
+        # Devolver los datos del usuario agregado
+        return jsonify({
+            "msg": "Usuario agregado al proyecto con éxito",
+            "user": {
+                "id": user.id,
+                "full_name": user.full_name,
+                "role": role.name
+            }
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        print(e)
+        return jsonify({"msg": "Error interno del servidor", "error": str(e)}), 500
+
