@@ -2,6 +2,7 @@
 import os
 from flask_admin import Admin
 from .models import db, User, Role, Project, TokenBlockedList, Iso, Question, Answer, RoleUser, ProjectContextResponse
+from .models import db, User, Role, Project, TokenBlockedList, Iso, Question, Answer, RoleUser, UserProjectRole
 from flask_admin.contrib.sqla import ModelView
 
 class CustomView(ModelView):
@@ -28,3 +29,4 @@ def setup_admin(app):
     admin.add_view(CustomView(RoleUser, db.session))
     admin.add_view(CustomView(ProjectContextResponse, db.session))
 
+    admin.add_view(CustomView(UserProjectRole, db.session))

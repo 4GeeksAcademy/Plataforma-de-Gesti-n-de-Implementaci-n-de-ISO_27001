@@ -441,8 +441,124 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				return false;
 
-			}
+			},
 		
+			addUserToProject: async (projectId, userId, roleId) => {
+				const { accessToken } = getStore();
+				if (!accessToken) {
+					console.error("No access token found");
+					return null;
+				}
+				try {
+					const response = await fetch(`${backendURL}/projects/${projectId}/add-user`, {
+						method: "POST",
+						headers: {
+							"Authorization": `Bearer ${accessToken}`,
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							user_id: parseInt(userId, 10), 
+							role_id: parseInt(roleId, 10), 
+						}),
+					});
+					if (!response.ok) {
+						const errorData = await response.json();
+						console.error(`Error ${response.status}:`, errorData);
+						return null;
+					}
+					const data = await response.json();
+					return data;
+				} catch (error) {
+					console.error("Error adding user to project:", error);
+					return null;
+				}
+			},
+			
+			getProjectRoles: async (projectId) => {
+				const { accessToken } = getStore();
+				if (!accessToken) {
+					console.error("No access token found");
+					return null;
+				}
+				try {
+					const response = await fetch(`${backendURL}/projects/${projectId}/roles`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${accessToken}`,
+							"Content-Type": "application/json",
+						},
+					});
+					if (!response.ok) {
+						const errorData = await response.json();
+						console.error(`Error ${response.status}:`, errorData);
+						return null;
+					}
+					const data = await response.json();
+					return data; // Devuelve los roles del proyecto
+				} catch (error) {
+					console.error("Error fetching project roles:", error);
+					return null;
+				}
+			},
+			
+			removeUserFromProject: async (projectId, userId) => {
+				const { accessToken } = getStore();
+				if (!accessToken) {
+					console.error("No access token found");
+					return null;
+				}
+				try {
+					const response = await fetch(`${backendURL}/projects/${projectId}/roles`, {
+						method: "DELETE",
+						headers: {
+							"Authorization": `Bearer ${accessToken}`,
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ user_id: userId }),
+					});
+					if (!response.ok) {
+						const errorData = await response.json();
+						console.error(`Error ${response.status}:`, errorData);
+						return null;
+					}
+					const data = await response.json();
+					return data; // Devuelve la respuesta del backend
+				} catch (error) {
+					console.error("Error removing user from project:", error);
+					return null;
+				}
+			},
+			
+			updateUserRoleInProject: async (projectId, userId, newRoleName) => {
+				const { accessToken } = getStore();
+				if (!accessToken) {
+					console.error("No access token found");
+					return null;
+				}
+				try {
+					const response = await fetch(`${backendURL}/projects/${projectId}/roles`, {
+						method: "PATCH",
+						headers: {
+							"Authorization": `Bearer ${accessToken}`,
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({
+							user_id: userId,
+							role: newRoleName, // Nombre del nuevo rol
+						}),
+					});
+					if (!response.ok) {
+						const errorData = await response.json();
+						console.error(`Error ${response.status}:`, errorData);
+						return null;
+					}
+					const data = await response.json();
+					return data; // Devuelve los datos del backend
+				} catch (error) {
+					console.error("Error updating user role in project:", error);
+					return null;
+				}
+			},
 			
 
 			

@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { Sidebar } from "../component/sidebar";
 import { FormMain } from "../component/formMain";
+import { ManageProjectRoles } from "../component/ManageProjectRoles";
 import { Context } from "../store/appContext";
 import { Default } from "./default";
 import "../../styles/main.css";
@@ -82,6 +83,12 @@ export const Main = () => {
                     <Route  path="/" element={<Default/>}/>
                 </Routes>
             </div>
+            {/* Componente de gestión de roles en la parte derecha */}
+        {store.user?.id === store.projects?.find(project => project.id === parseInt(projectId))?.project_leader_id && (
+            <div style={{ flex: "1", backgroundColor: "#f8f9fa", padding: "1rem", overflowY: "auto" }}>
+                <ManageProjectRoles projectId={projectId} />
+            </div>
+        )}
         </div>
     )
 }
