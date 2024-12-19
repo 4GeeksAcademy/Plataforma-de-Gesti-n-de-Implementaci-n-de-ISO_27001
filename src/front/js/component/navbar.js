@@ -100,14 +100,14 @@ export const Navbar = () => {
                                 className="btn btn-primary"
                                 onClick={handleRegisterAccount}
                             >
-                                Register
+                                Registrar Cuenta
                             </button>
                             <button
                                 type="button"
                                 className="btn btn-secondary ms-2"
                                 onClick={handleLogin}
                             >
-                                Login
+                                Iniciar Sesión
                             </button>
                         </>
                     )}
