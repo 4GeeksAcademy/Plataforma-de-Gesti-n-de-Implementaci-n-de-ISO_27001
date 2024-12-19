@@ -30,6 +30,9 @@ export const Login = () => {
 
     return (
         <div className="login-container">
+            <div className="firstDiv">
+
+            </div>
             <div className="login-form">
                 <h1>Iniciar Sesión</h1>
                 {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Mostrar errores */}
@@ -59,6 +62,8 @@ export const Login = () => {
                         ¿Olvidaste tu contraseña? <a href="#">Recupérala aquí</a>
                     </p>
                 </form>
+            </div>
+            <div className="firstDiv">
             </div>
         </div>
     );

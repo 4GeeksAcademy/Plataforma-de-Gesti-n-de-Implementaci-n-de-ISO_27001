@@ -6,7 +6,7 @@ import datetime, cloudinary
 import uuid
 from flask import Flask, request, jsonify, url_for, json, Blueprint
 
-from api.models import db, User, Role, Project, Iso, UserProjectRole, TokenBlockedList
+from api.models import db, User, Role, Project, Iso, UserProjectRole, TokenBlockedList, Answer
 from datetime import timedelta
 
 from api.utils import generate_sitemap, APIException
@@ -463,14 +463,19 @@ def user_profile_picture_get():
 
     return jsonify({"url": image_info["secure_url"]})
 
-@api.route("/uploadfiles", methods=["PUT"])
+
+@api.route("/answers/<int:answer_id>/uploadfiles", methods=["PUT"])
 @jwt_required()
-def upload_files():
+def upload_answer_files(answer_id):
     try:
         user_id = get_jwt_identity()
         user = User.query.filter_by(id=user_id).first()
         if not user:
             return jsonify({"msg": "User not found"}), 404
+
+        answer = Answer.query.filter_by(id=answer_id).first()
+        if not answer:
+            return jsonify({"msg": "Answer not found"}), 404
 
         if "files" not in request.files:
             return jsonify({"msg": "No file in request"}), 400
@@ -478,14 +483,6 @@ def upload_files():
         files = request.files.getlist("files")
         if not files:
             return jsonify({"msg": "No selected files"}), 400
-
-        answer_id = request.form.get("answer_id")  # Ahora usamos 'answer_id'
-        if not answer_id:
-            return jsonify({"msg": "Answer ID is required"}), 400
-
-        answer = Answer.query.filter_by(id=answer_id).first()  # Buscar la respuesta en lugar del proyecto
-        if not answer:
-            return jsonify({"msg": "Answer not found"}), 404
 
         file_urls = [] 
 
@@ -499,14 +496,12 @@ def upload_files():
             temp = NamedTemporaryFile(delete=False)
             file.save(temp.name)
 
-            # Subir a Cloudinary con un nombre único
-            filename = f"userFiles/{user_id}_{uuid.uuid4()}"
-
-            upload_result = cloudinary.uploader.upload(temp.name, public_id=filename, folder="userFiles", resource_type="auto", access_mode="public")
-            file_urls.append(upload_result["secure_url"])  # Guardar la URL del archivo
+            filename = f"answerFiles/{answer_id}_{uuid.uuid4()}"
+            upload_result = cloudinary.uploader.upload(temp.name, public_id=filename, folder="answerFiles", resource_type="auto", access_mode="public")
+            file_urls.append(upload_result["secure_url"]) 
 
         if file_urls:
-            answer.project_file = file_urls[0]  # Ahora asociamos la URL con 'project_file' en la tabla Answer
+            answer.project_file = file_urls[0]  
             db.session.commit()
 
         return jsonify({"msg": "Files uploaded successfully", "file_urls": file_urls})
@@ -515,58 +510,6 @@ def upload_files():
         print("Error al subir los archivos:", ex)
         return jsonify({"msg": "Error al subir los archivos"}), 500
 
-
-# @api.route("/uploadfiles", methods=["PUT"])
-# @jwt_required()
-# def upload_files():
-#     try:
-#         user_id = get_jwt_identity()
-#         user = User.query.filter_by(id=user_id).first()
-#         if not user:
-#             return jsonify({"msg": "User not found"}), 404
-
-#         if "files" not in request.files:
-#             return jsonify({"msg": "No file in request"}), 400
-
-#         files = request.files.getlist("files")
-#         if not files:
-#             return jsonify({"msg": "No selected files"}), 400
-
-#         project_id = request.form.get("project_id")
-#         if not project_id:
-#             return jsonify({"msg": "Project ID is required"}), 400
-
-#         project = Project.query.filter_by(id=project_id).first()
-#         if not project:
-#             return jsonify({"msg": "Project not found"}), 404
-
-#         file_urls = [] 
-
-#         for file in files:
-#             if file.filename == "":
-#                 return jsonify({"msg": "One or more files have no name"}), 400
-
-#             if not allowed_file(file.filename):
-#                 return jsonify({"msg": "Invalid file type. Allowed types: pdf, doc, docx, txt, jpg, jpeg, png, gif."}), 400
-
-#             temp = NamedTemporaryFile(delete=False)
-#             file.save(temp.name)
-
-#             # Subir a Cloudinary con un nombre único
-#             filename = f"userFiles/{user_id}_{uuid.uuid4()}"
-
-#             upload_result = cloudinary.uploader.upload(temp.name, public_id=filename, folder="userFiles", resource_type="auto", access_mode="public")
-#             file_urls.append(upload_result["secure_url"])  # Guardar la URL del archivo
-
-#         if file_urls:
-#             project.project_file = file_urls[0]  # Guardar solo la primera URL
-#             db.session.commit()
-
-#         return jsonify({"msg": "Files uploaded successfully", "file_urls": file_urls})
-
-#     except Exception as ex:
-#         print("Error al subir los archivos:", ex)
-#         return jsonify({"msg": "Error al subir los archivos"}), 500
 
 @api.route("/projects/<int:project_id>/files", methods=["GET"])
 @jwt_required()

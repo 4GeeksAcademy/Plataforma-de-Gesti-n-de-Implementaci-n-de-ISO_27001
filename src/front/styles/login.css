@@ -28,6 +28,7 @@ body {
     width: 90%;
     max-width: 400px;
     animation: fadeIn 1s ease-in-out;
+    height: 500px;
 }
 
 .login-form h1 {
@@ -107,3 +108,4 @@ body {
         transform: translateY(0);
     }
 }
+
