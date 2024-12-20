@@ -1111,6 +1111,20 @@ def create_project_meeting(project_id):
     except Exception as e:
         return jsonify({"msg": str(e)}), 500
 
+@api.route("/user/zoom-access-token", methods=["GET"])
+@jwt_required()
+def get_zoom_access_token():
+    user_id = get_jwt_identity()  # Obtiene el ID del usuario autenticado
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+
+    if not user.zoom_access_token:
+        return jsonify({"msg": "Zoom access token no encontrado"}), 404
+
+    return jsonify({"zoom_access_token": user.zoom_access_token}), 200
+
 
 
 

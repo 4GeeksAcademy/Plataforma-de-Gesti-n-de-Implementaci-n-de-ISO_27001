@@ -673,7 +673,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			
-
+			getZoomAccessToken: async () => {
+				const { accessToken } = getStore();
+				try {
+					const response = await fetch(`${backendURL}/user/zoom-access-token`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${accessToken}`,
+							"Content-Type": "application/json",
+						},
+					});
+					if (!response.ok) {
+						console.error("Error al obtener el Zoom access token");
+						return null;
+					}
+					const data = await response.json();
+					return data.zoom_access_token;
+				} catch (error) {
+					console.error("Error en getZoomAccessToken:", error);
+					return null;
+				}
+			},
+			
 			
 
 		}

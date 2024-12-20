@@ -4,14 +4,43 @@ import { Context } from "../store/appContext";
 export const ManageMeetings = ({ projectId }) => {
     const { actions } = useContext(Context);
     const [meetingDetails, setMeetingDetails] = useState({
-        access_token: "eyJzdiI6IjAwMDAwMiIsImFsZyI6IkhTNTEyIiwidiI6IjIuMCIsImtpZCI6ImRiMmQ2MjRhLTE4MmMtNDg2Mi1iZjI0LTc3MzMyMzAxMjZiNiJ9.eyJ2ZXIiOjEwLCJhdWlkIjoiNTdjZWRhYjAwZGU2YTgyZGVhZGE1YTVhMjM0N2ZjNjI2ZWIzODViMDA5YWQyYzUzYmFhMDQ5ZmE2NWViNWEwNCIsImNvZGUiOiJUMmQ3Mm95VGlUN29yREdVdTZEUWFxaFlCanMzUEJ3bmciLCJpc3MiOiJ6bTpjaWQ6UGVmMXNXN2xUNEx6U3RsUG9mY3dRIiwiZ25vIjowLCJ0eXBlIjowLCJ0aWQiOjAsImF1ZCI6Imh0dHBzOi8vb2F1dGguem9vbS51cyIsInVpZCI6InoxYWZHeXpsUkN1STV4ZU9GUy1ia3ciLCJuYmYiOjE3MzQ3MTkyNTUsImV4cCI6MTczNDcyMjg1NSwiaWF0IjoxNzM0NzE5MjU1LCJhaWQiOiIzOTMtVXRLaVJTQ2RkcDl6a0p4U1RRIn0.7kCweJZ9OGr3EqYeHKi66-TTIMXKmkFDNwSfH3yTlPth4cBUKMdajs-0Lg0rmxmfsVomnJ0J7Yl7t5QO0OC9Yw",
+        access_token: "",
         topic: "",
         start_time: "",
         duration: "",
         timezone: "UTC"
     });
     const [accessToken, setAccessToken] = useState(null);
+    const [zoomAccessToken, setZoomAccessToken] = useState(null); 
     const [meetings, setMeetings] = useState([]);
+
+    useEffect(() => {
+        const fetchZoomToken = async () => {
+            
+            const token = await actions.getZoomAccessToken();
+            if (token) {
+                setZoomAccessToken(token);
+                localStorage.setItem("zoomAccessToken", token); // Guarda el token en LocalStorage
+            } else {
+                console.error("Error al obtener el Zoom access token");
+            }
+        };
+    
+        fetchZoomToken();
+        handleCallback(); // Verifica si ya hay un token almacenado
+
+    }, []);
+    
+    useEffect(() => {
+        if (zoomAccessToken) {
+            setMeetingDetails((prevDetails) => ({
+                ...prevDetails,
+                access_token: zoomAccessToken,
+            }));
+        }
+    }, [zoomAccessToken]);
+    
+
 
     useEffect(() => {
         const loadMeetings = async () => {
@@ -43,9 +72,6 @@ export const ManageMeetings = ({ projectId }) => {
         }
     };
 
-    useEffect(() => {
-        handleCallback(); // Verifica si ya hay un token almacenado
-    }, []);
 
     const handleCreateMeeting = async () => {
         if (!accessToken) {

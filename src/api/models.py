@@ -13,6 +13,7 @@ class User(db.Model):
     registered_on = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
     profile_pic = db.Column(db.String(300), nullable=True)
+    zoom_access_token = db.Column(db.String(900), nullable=True)
 
     
     # Relación con RoleUser (tabla intersección)
@@ -32,7 +33,8 @@ class User(db.Model):
             "full_name": self.full_name,
             "is_active": self.is_active,
             "roles": [role_user.role.serialize() for role_user in self.user_roles],
-            "registered_on": self.registered_on
+            "registered_on": self.registered_on,
+            "zoom_access_token": self.zoom_access_token,  # Incluye el access_token en la serialización
         }
 
 class Role(db.Model):
