@@ -25,50 +25,54 @@ export const FormProject = () => {
     };
 
     return (
-        <div className="container">
-            <div className="left-container">
-                <p className="text-center">
-                    <img className="left-container-logo" src={Logo} />
-                </p>
+        <div className="big-div">
+            <div className="left-div">
+                <div className="left-div-logo text-center">
+                    <img className="white-logo" src={Logo} />
+                </div>
             </div>
-            <div className="right-container">
-                <h1 className="text-center">Register Project</h1>
-                
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label htmlFor="projectName" className="form-label">Project Name</label>
-                        <input type="text" className="form-control" id="projectName" placeholder="Enter Project Name" onChange={(e) => setProjectName(e.target.value)} required />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="companyName" className="form-label">Company Name</label>
-                        <input type="text" className="form-control" id="companyName" placeholder="Enter Company Name" value={companyName}
-                        onChange={(e) => setCompanyName(e.target.value)} required />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="projectDescription" className="form-label">Project Description</label>
-                        <textarea type="textarea" className="form-control" id="projectDescription" placeholder="Enter Project Description" value={projectDescription}
-                            onChange={(e) => setProjectDescription(e.target.value)} required />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="startDate" className="form-label">Start Date</label>
-                        <input 
-                            type="date" 
-                            className="form-control" 
-                            id="startDate" 
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)} 
-                            required 
-                        />
-                    </div>
-                    {errorMessage && (
-                        <div className="alert alert-danger text-center mt-3">{errorMessage}</div>
-                    )}
-                    <div className="row justify-content-center mt-3">
-                        <div className="col-auto">
-                            <button type="submit" className="btn">Register Project</button>
+            <div className="right-div">
+                <div>
+                    <h1 className="h3-custom text-center p-4" style={{borderBottomRightRadius: "15px", borderBottomLeftRadius: "15px"}}>Registro de Proyecto</h1>
+                </div>
+                <div className="custom-card-password">
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-3 text-start">
+                            <label htmlFor="projectName" className="form-label">Nombre del Proyecto</label>
+                            <input type="text" className="form-control" id="projectName" placeholder="Escribe el nombre del proyecto aquí" onChange={(e) => setProjectName(e.target.value)} required />
                         </div>
-                    </div>
-                </form>
+                        <div className="mb-3 text-start">
+                            <label htmlFor="companyName" className="form-label">Nombre de la Compañía</label>
+                            <input type="text" className="form-control" id="companyName" placeholder="Escribe el nombre de la compañía aquí" value={companyName}
+                            onChange={(e) => setCompanyName(e.target.value)} required />
+                        </div>
+                        <div className="mb-3 text-start">
+                            <label htmlFor="projectDescription" className="form-label">Descripción del Proyecto</label>
+                            <textarea type="textarea" className="form-control" id="projectDescription" placeholder="Escribe la descripción del proyecto aquí" rows="3" value={projectDescription}
+                                onChange={(e) => setProjectDescription(e.target.value)} required />
+                        </div>
+                        <div className="mb-3 text-start">
+                            <label htmlFor="startDate" className="form-label">Fecha de Inicio</label>
+                            <input 
+                                type="date" 
+                                className="form-control" 
+                                id="startDate" 
+                                value={startDate}
+                                onChange={(e) => setStartDate(e.target.value)} 
+                                required 
+                            />
+                        </div>
+                        {errorMessage && (
+                            <div className="alert alert-danger text-center mt-3">{errorMessage}</div>
+                        )}
+                        <div className="row justify-content-center mt-3">
+                            <div className="col-auto">
+                                <button type="submit" className="btn">Registar Proyecto</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
             </div>
         </div>
     );
