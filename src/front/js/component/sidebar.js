@@ -42,7 +42,7 @@ useEffect(()=> {
 
 
   return (
-    <div className="sidebar">
+    <div className="sidebar" style={{height: "100vh"}}>
      {/* <ol className="flex-column w-75 bg-light text-dark h-100 list-group"> */}
      <ul className="sidebar-ul">
       {mainOptions?.map(renderOptions)}

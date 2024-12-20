@@ -45,8 +45,7 @@ export const FormRequiriment = ({requirement, projectId, existingResponse}) => {
       const fileUrl = await actions.saveProjectFile(projectId, selectedFiles);
    
       if (fileUrl) {
-         // Limpiar la lista de URLs y agregar solo el nuevo archivo
-         setFileUrls([fileUrl]); // Aquí se reemplaza la lista por el nuevo archivo
+         setFileUrls([fileUrl]);
       }
    };
    return (
@@ -90,7 +89,7 @@ export const FormRequiriment = ({requirement, projectId, existingResponse}) => {
                      <label htmlFor="exampleFormControlTextarea2" className="form-label">Documento de Respaldo</label>
                      <textarea className="form-control" id="exampleFormControlTextarea2" rows="6" value={fileUrls.join("\n")} readOnly></textarea>
                      <input type="file" id="fileInput" multiple style={{ display: "none" }} onChange={handleFileChange}></input>
-                     <button style={{width: "200px"}} type="button" className="btn btn-outline-primary col-4 mt-3" onClick={() => document.getElementById("fileInput").click()}>Seleccionar Archivo</button>
+                     <button style={{width: "200px"}} type="button" className="btn btn-outline-primary col-4 mt-3 me-2" onClick={() => document.getElementById("fileInput").click()}>Seleccionar Archivo</button>
                      <button style={{width: "200px"}} type="button" className="btn btn-outline-primary col-4 mt-3" onClick={saveFile}>Guardar Archivo</button>
                   </div>
                </div>
