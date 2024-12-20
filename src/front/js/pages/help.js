@@ -3,6 +3,7 @@ import Logo from "../../img/white-logo.png";
 
 export const Help = () => {
     return (
+
         <div className="big-div">
             <div className="left-div">
                 <div className="left-div-logo text-center">
@@ -22,6 +23,7 @@ export const Help = () => {
                         <strong>Horario de Atención:</strong> Lunes a Viernes, 9:00 AM - 5:00 PM
                     </p>
                 </div>
+
             </div>
         </div>
     );

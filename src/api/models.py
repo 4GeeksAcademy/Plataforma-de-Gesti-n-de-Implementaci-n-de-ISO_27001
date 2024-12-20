@@ -13,6 +13,7 @@ class User(db.Model):
     registered_on = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
     profile_pic = db.Column(db.String(300), nullable=True)
+    zoom_access_token = db.Column(db.String(900), nullable=True)
 
     
     # Relación con RoleUser (tabla intersección)
@@ -32,7 +33,8 @@ class User(db.Model):
             "full_name": self.full_name,
             "is_active": self.is_active,
             "roles": [role_user.role.serialize() for role_user in self.user_roles],
-            "registered_on": self.registered_on
+            "registered_on": self.registered_on,
+            "zoom_access_token": self.zoom_access_token,  # Incluye el access_token en la serialización
         }
 
 class Role(db.Model):
@@ -99,6 +101,9 @@ class Project(db.Model):
     # Relación con los roles de usuarios en el proyecto
     user_project_roles = db.relationship('UserProjectRole', back_populates='project')
 
+    # Relación con reuniones
+    meetings = db.relationship('Meeting', backref='project', lazy=True)
+
     # Relación con los files
     # project_files = db.relationship('ProjectFile', back_populates='project')
 
@@ -115,6 +120,7 @@ class Project(db.Model):
             "end_date": self.end_date,
             "status": self.status,
             "project_leader": self.project_leader.full_name if self.project_leader else None,
+            "meetings": [meeting.serialize() for meeting in self.meetings],
         }
 
 
@@ -227,4 +233,25 @@ class ProjectContextResponse(db.Model):
             "response": self.response,
             "comment": self.comment,
             "project_file": self.comment,
+        }
+
+class Meeting(db.Model):
+    __tablename__ = "meeting"
+    id = db.Column(db.Integer, primary_key=True)
+    topic = db.Column(db.String(255), nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False)
+    duration = db.Column(db.Integer, nullable=False)
+    join_url = db.Column(db.String(500), nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey("project.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "topic": self.topic,
+            "start_time": self.start_time,
+            "duration": self.duration,
+            "join_url": self.join_url,
+            "password": self.password,
         }

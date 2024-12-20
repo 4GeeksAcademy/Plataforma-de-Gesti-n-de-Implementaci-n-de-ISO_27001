@@ -58,7 +58,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false
 				}
 				const data = await response.json();
-				setStore({ accessToken: data.token,  user: { full_name: data.full_name }});
+				setStore({ accessToken: data.token,  user: { full_name: data.full_name, email: email, registered_on: data.registered_on } });
 				localStorage.setItem("accessToken", data.token); //Para guardar en el localStrorage
         		return true;
 
@@ -342,6 +342,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			logout: () => {
 				setStore({ accessToken: null, user: null }); // Limpia el estado del token y usuario
 				localStorage.removeItem("accessToken"); // Limpia el token del almacenamiento local
+				localStorage.removeItem("zoomAccessToken"); 
 			},
 
 			forgotPassword: async (email) => {
@@ -559,7 +560,174 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			
-
+			createMeeting: async (projectId, meetingData) => {
+				const { accessToken } = getStore();
+				const response = await fetch(`${backendURL}/projects/${projectId}/meetings`, {
+					method: "POST",
+					headers: {
+						"Authorization": `Bearer ${accessToken}`,
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(meetingData),
+				});
+				return response.ok;
+			},
+			
+			getProjectMeetings: async (projectId) => {
+				const { accessToken } = getStore();
+				const response = await fetch(`${backendURL}/projects/${projectId}/meetings`, {
+					method: "GET",
+					headers: {
+						"Authorization": `Bearer ${accessToken}`,
+						"Content-Type": "application/json",
+					},
+				});
+				if (response.ok) {
+					const data = await response.json();
+					setStore({ projectMeetings: data });
+				}
+			},
+			
+			createMeeting: async (projectId, meetingDetails) => {
+				try {
+					const { accessToken } = getStore();
+					const response = await fetch(`${backendURL}/projects/${projectId}/meetings`, {
+						method: "POST",
+						headers: {
+							"Authorization": `Bearer ${accessToken}`,
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify(meetingDetails),
+					});
+					if (!response.ok) {
+						console.log("Error al crear la reunión:", response.status);
+						return false;
+					}
+					return true;
+				} catch (error) {
+					console.error("Error al crear la reunión:", error);
+					return false;
+				}
+			},
+			getProjectMeetings: async (projectId) => {
+				try {
+					const { accessToken } = getStore();
+					const response = await fetch(`${backendURL}/projects/${projectId}/meetings`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${accessToken}`,
+							"Content-Type": "application/json",
+						},
+					});
+					if (!response.ok) {
+						console.log("Error al obtener reuniones:", response.status);
+						return null;
+					}
+					const data = await response.json();
+					return data;
+				} catch (error) {
+					console.error("Error al obtener reuniones:", error);
+					return null;
+				}
+			},
+			createZoomAuthURL: async () => {
+				try {
+					const response = await fetch(`${backendURL}/zoom/authorize`, {
+						method: "GET",
+					});
+					if (!response.ok) {
+						console.error("Error al obtener URL de autorización de Zoom");
+						return null;
+					}
+					const data = await response.json();
+					return data.authorization_url; // URL para redirigir al usuario
+				} catch (error) {
+					console.error("Error en createZoomAuthURL:", error);
+					return null;
+				}
+			},
+			
+			fetchZoomAccessToken: async (code) => {
+				try {
+					const response = await fetch(`${backendURL}/zoom/callback?code=${code}`, {
+						method: "GET",
+					});
+					if (!response.ok) {
+						console.error("Error al obtener el token de acceso de Zoom");
+						return null;
+					}
+					const data = await response.json();
+					return data.access_token;
+				} catch (error) {
+					console.error("Error en fetchZoomAccessToken:", error);
+					return null;
+				}
+			},
+			
+			createZoomMeeting: async (accessToken, meetingDetails) => {
+				try {
+					const response = await fetch(`${backendURL}/zoom/create-meeting`, {
+						method: "POST",
+						headers: {
+							"Authorization": `Bearer ${accessToken}`,
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify(meetingDetails),
+					});
+					if (!response.ok) {
+						console.log(meetingDetails)
+						console.log(accessToken)
+						console.error("Error al crear reunión en Zoom");
+						return null;
+					}
+					const data = await response.json();
+					return data; // Devuelve los datos de la reunión
+				} catch (error) {
+					console.error("Error en createZoomMeeting:", error);
+					return null;
+				}
+			},
+			
+			saveMeetingToProject: async (projectId, meetingData) => {
+				try {
+					const { accessToken } = getStore();
+					const response = await fetch(`${backendURL}/projects/${projectId}/meetings`, {
+						method: "POST",
+						headers: {
+							"Authorization": `Bearer ${accessToken}`,
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify(meetingData),
+					});
+					return response.ok;
+				} catch (error) {
+					console.error("Error al guardar reunión en el proyecto:", error);
+					return false;
+				}
+			},
+			
+			getZoomAccessToken: async () => {
+				const { accessToken } = getStore();
+				try {
+					const response = await fetch(`${backendURL}/user/zoom-access-token`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${accessToken}`,
+							"Content-Type": "application/json",
+						},
+					});
+					if (!response.ok) {
+						console.error("Error al obtener el Zoom access token");
+						return null;
+					}
+					const data = await response.json();
+					return data.zoom_access_token;
+				} catch (error) {
+					console.error("Error en getZoomAccessToken:", error);
+					return null;
+				}
+			},
+			
 			
 
 		}
