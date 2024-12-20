@@ -34,7 +34,7 @@ export const ResetPassword = () => {
             </div>
             <div className="right-div">
                 <div>
-                    <h3 className="h3-custom text-center p-4" style={{borderBottomRightRadius: "15px", borderBottomLeftRadius: "15px"}}>Recuperación de Contraseña</h3>
+                    <h1 className="h3-custom text-center p-4" style={{borderBottomRightRadius: "15px", borderBottomLeftRadius: "15px"}}>Recuperación de Contraseña</h1>
                 </div>
                 <div className="custom-card-password">
                     <form onSubmit={handleSubmit}>

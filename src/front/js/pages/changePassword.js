@@ -41,12 +41,12 @@ export const ChangePassword = () => {
       </div>
 
       <div className="right-div">
-        <h3
+        <h1
           className="h3-custom text-center p-4"
           style={{ borderBottomRightRadius: "15px", borderBottomLeftRadius: "15px" }}
         >
           Cambio de Contraseña
-        </h3>
+        </h1>
 
         {/* Mostrar mensajes de error o éxito */}
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
