@@ -28,7 +28,14 @@
 
 
 
-
+.hero-title-orange {
+    font-size: 5.5rem;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 20px;
+    color: #D35400;
+    text-shadow: 2px 2px 5px rgba(177, 174, 174, 0.8); /* Sombra sutil */
+    animation: fadeInUp 1.5s ease-in-out;
+}
 
 
     
