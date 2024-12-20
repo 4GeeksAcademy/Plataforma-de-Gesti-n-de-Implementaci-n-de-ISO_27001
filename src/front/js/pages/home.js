@@ -20,6 +20,9 @@ export const Home = () => {
             {/* Hero Section */}
             <section className="hero">
                 <div className="hero-content">
+                    <h1 className="hero-title-orange">
+                        CerBro 27001 
+                    </h1>
                     <h1 className="hero-title">
                         Gestiona la Seguridad de la Información con <span className="highlight">Confianza</span>
                     </h1>

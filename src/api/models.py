@@ -219,6 +219,7 @@ class ProjectContextResponse(db.Model):
     subdomain_id = db.Column(db.Integer, db.ForeignKey('isos.id'), nullable=False)
     response = db.Column(db.String(50), nullable=False)  # Respuesta del select
     comment = db.Column(db.Text, nullable=True)         # Comentario del usuario
+    project_file = db.Column(db.String(3000), nullable=True)
 
     # Relaciones
     project = db.relationship('Project', backref='context_responses')
@@ -231,6 +232,7 @@ class ProjectContextResponse(db.Model):
             "subdomain_id": self.subdomain_id,
             "response": self.response,
             "comment": self.comment,
+            "project_file": self.comment,
         }
 
 class Meeting(db.Model):

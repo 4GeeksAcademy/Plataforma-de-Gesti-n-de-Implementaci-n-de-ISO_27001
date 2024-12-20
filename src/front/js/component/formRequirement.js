@@ -37,6 +37,17 @@ export const FormRequiriment = ({requirement, projectId, existingResponse}) => {
    };
    console.log("FormRequirement.js - projectId:", projectId);
 
+   const saveFile = async () => {
+      if (!projectId) {
+         console.error("Error: projectId está indefinido");
+         return;
+      }
+      const fileUrl = await actions.saveProjectFile(projectId, selectedFiles);
+   
+      if (fileUrl) {
+         setFileUrls([fileUrl]);
+      }
+   };
    return (
       <div className="container1">
          <div className="container-low">
@@ -78,7 +89,8 @@ export const FormRequiriment = ({requirement, projectId, existingResponse}) => {
                      <label htmlFor="exampleFormControlTextarea2" className="form-label">Documento de Respaldo</label>
                      <textarea className="form-control" id="exampleFormControlTextarea2" rows="6" value={fileUrls.join("\n")} readOnly></textarea>
                      <input type="file" id="fileInput" multiple style={{ display: "none" }} onChange={handleFileChange}></input>
-                     <button style={{width: "250px"}} type="button" className="btn btn-outline-primary col-4 mt-3" onClick={() => document.getElementById("fileInput").click()}>Seleccionar Archivo</button>
+                     <button style={{width: "200px"}} type="button" className="btn btn-outline-primary col-4 mt-3 me-2" onClick={() => document.getElementById("fileInput").click()}>Seleccionar Archivo</button>
+                     <button style={{width: "200px"}} type="button" className="btn btn-outline-primary col-4 mt-3" onClick={saveFile}>Guardar Archivo</button>
                   </div>
                </div>
             </div>
