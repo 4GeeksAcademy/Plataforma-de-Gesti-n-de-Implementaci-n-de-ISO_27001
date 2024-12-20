@@ -21,6 +21,8 @@ import { ResetPassword } from  "./pages/resetPassword";
 import { ChangePassword } from "./pages/changePassword";
 import { Profile } from "./pages/profile";
 import { Help } from "./pages/help";
+import { ZoomAuthorized } from "./pages/ZoomAuthorized";
+
 
 //create your first component
 const Layout = () => {
@@ -48,7 +50,7 @@ const Layout = () => {
                         <Route element={<ResetPassword />} path="/reset-password"/>
                         <Route element={<ChangePassword />} path="/change-password" />
                         <Route element={<Main />} path="/main/:projectId/*" />
-
+                        <Route path="/zoom-authorized" element={<ZoomAuthorized />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/help" element={<Help />} />
                         <Route element={<h1>Not found!</h1>} />

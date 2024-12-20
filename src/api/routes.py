@@ -5,7 +5,7 @@ import os
 import requests
 import datetime, cloudinary
 import uuid
-from flask import Flask, request, jsonify, url_for, json, Blueprint
+from flask import Flask, request, jsonify, url_for, json, Blueprint, redirect
 
 from api.models import db, User, Role, Project, Iso, UserProjectRole, TokenBlockedList, ProjectContextResponse,  RoleUser, Answer, Meeting
 from datetime import timedelta
@@ -990,14 +990,15 @@ def zoom_callback():
 
         # Procesar los tokens recibidos
         tokens = response.json()
-        return jsonify({
-            "access_token": tokens.get("access_token"),
-            "refresh_token": tokens.get("refresh_token"),
-            "expires_in": tokens.get("expires_in")
-        }), 200
+        access_token = tokens.get("access_token")
+        refresh_token = tokens.get("refresh_token")
+        expires_in = tokens.get("expires_in")
 
+        
+        # Redirigir a la aplicación con el token
+        frontend_url = os.getenv("FRONTEND_URL", "https://fantastic-happiness-4xq5xr7jg7x25797-3000.app.github.dev/")
+        return redirect(f"{frontend_url}/zoom-authorized?access_token={access_token}")
     except Exception as e:
-        # Capturar y devolver cualquier error
         return jsonify({"msg": "Internal Server Error", "error": str(e)}), 500
 
 
@@ -1057,7 +1058,7 @@ def zoom_refresh_token():
     }
 
     headers = {
-        "Authorization": f"Basic {requests.auth._basic_auth_str(client_id, client_secret)}",
+        "Authorization": f"{requests.auth._basic_auth_str(client_id, client_secret)}",
         "Content-Type": "application/x-www-form-urlencoded",
     }
 

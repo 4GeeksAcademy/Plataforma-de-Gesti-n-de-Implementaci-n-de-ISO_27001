@@ -6,7 +6,7 @@ export const Profile = () => {
     const [password, setPassword] = useState("");
 
     // Simulamos la fecha de registro (debería venir del backend)
-    const registrationDate = "2024-01-01";
+    const registrationDate = "2024-12-20";
 
     const handlePasswordChange = () => {
         console.log("Nueva contraseña:", password);
@@ -19,7 +19,7 @@ export const Profile = () => {
             <div className="card shadow p-4">
                 <p><strong>Nombre Completo:</strong> {store.user?.full_name || "Usuario"}</p>
                 <p><strong>Correo Electrónico:</strong> {store.user?.email || "email@example.com"}</p>
-                <p><strong>Fecha de Registro:</strong> {registrationDate}</p>
+                <p><strong>Fecha de Registro:</strong> {store.user?.registered_on || registrationDate}</p>
 
                 <div className="mt-4">
                     <h4>Cambiar Contraseña</h4>
