@@ -6,8 +6,10 @@ import { FormMain } from "../component/formMain";
 import { ManageProjectRoles } from "../component/ManageProjectRoles";
 import { Context } from "../store/appContext";
 import { Default } from "./default";
+import { ManageMeetings } from "../component/ManageMeetings";
 import "../../styles/main.css";
 import "../../styles/manageProjectRoles.css";
+import "../../styles/manageMeetings.css";
 
 export const Main = () => {
     const { projectId } = useParams();
@@ -16,6 +18,9 @@ export const Main = () => {
     const [projectResponses, setProjectResponses] = useState([]);
     const [isRolesVisible, setIsRolesVisible] = useState(false);
     const [isProjectLeader, setIsProjectLeader] = useState(false);
+    const [isMeetingsVisible, setIsMeetingsVisible] = useState(false);
+   
+
 
 
     useEffect(()=>{
@@ -60,6 +65,7 @@ export const Main = () => {
             setIsProjectLeader(isLeader);
         }, [store.user, store.projects, projectId]);
         
+        
     return (
 
         <div className="d-flex"style={{ height: "100vh", width: "100vw", flexDirection: "row" }}>
@@ -102,9 +108,20 @@ export const Main = () => {
                             : "Mostrar Gestión de Usuarios y Roles"}
                     </button>
 
-                    {isRolesVisible && (
+                </>
+            )}
+            {/* Botón de reuniones */}
+            {isProjectLeader && (
+                <>
+                    <button
+                        onClick={() => setIsMeetingsVisible(!isMeetingsVisible)}
+                        className="floating-button meeting-button"
+                    >
+                        {isMeetingsVisible ? "Ocultar Gestión de Reuniones" : "Agendar Reunión"}
+                    </button>
+                    {isMeetingsVisible && (
                         <div className="floating-container">
-                            <ManageProjectRoles projectId={projectId} />
+                            <ManageMeetings projectId={projectId} />
                         </div>
                     )}
                 </>

@@ -8,19 +8,31 @@ export const Single = props => {
 	const { store, actions } = useContext(Context);
 	const params = useParams();
 
-	return (
-		<div className="jumbotron">
-			<h1 className="display-4">This will show the demo element: {store.demo[params.theid].title}</h1>
-			<img src={rigoImageUrl} />
-			<hr className="my-4" />
-
-			<Link to="/">
-				<span className="btn btn-primary btn-lg" href="#" role="button">
-					Back home
-				</span>
-			</Link>
-		</div>
-	);
+	
+	const createMeeting = async () => {
+		const response = await fetch("http://tu-backend.com/create-meeting", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				topic: "Reunión del Equipo",
+				start_time: "2024-12-20T10:00:00Z", // Formato ISO 8601
+				duration: 60,
+				agenda: "Discusión sobre avances del proyecto",
+			}),
+		});
+	
+		const data = await response.json();
+		if (response.ok) {
+			alert(`Reunión creada: ${data.join_url}`);
+		} else {
+			console.error(data.error);
+		}
+	};
+	
+	return <button onClick={createMeeting}>Crear Reunión en Zoom</button>;
+	
 };
 
 Single.propTypes = {

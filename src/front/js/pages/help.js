@@ -4,7 +4,7 @@ export const Help = () => {
     return (
         <div className="container mt-5">
             <h1>Ayuda y Contacto</h1>
-            <div className="card shadow p-4">
+            <div className="card shadow p-4 w-75">
                 <p>
                     <strong>Correo Electrónico de Soporte:</strong> soporte@plataforma.com
                 </p>

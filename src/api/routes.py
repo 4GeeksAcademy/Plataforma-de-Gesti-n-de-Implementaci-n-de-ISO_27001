@@ -2,11 +2,12 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
+import requests
 import datetime, cloudinary
 import uuid
 from flask import Flask, request, jsonify, url_for, json, Blueprint
 
-from api.models import db, User, Role, Project, Iso, UserProjectRole, TokenBlockedList, ProjectContextResponse,  RoleUser, Answer
+from api.models import db, User, Role, Project, Iso, UserProjectRole, TokenBlockedList, ProjectContextResponse,  RoleUser, Answer, Meeting
 from datetime import timedelta
 
 from api.utils import generate_sitemap, APIException
@@ -20,9 +21,14 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
 from datetime import timedelta
 
+
 api = Blueprint('api', __name__)
 
+# Configuración de CORS para el Blueprint
+CORS(api, resources={r"/*": {"origins": "*"}})
+
 app = Flask(__name__)
+
 bcrypt = Bcrypt(app)
 
 app.config['MAIL_SERVER'] = 'mx.consultancysecurity.com'  # Cambia por tu servidor SMTP
@@ -37,6 +43,7 @@ mail = Mail(app)
 
 # Allow CORS requests to this API
 CORS(api)
+
 
 ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png', 'gif'}
 
@@ -931,3 +938,180 @@ def add_user_to_project(project_id):
         print(e)
         return jsonify({"msg": "Error interno del servidor", "error": str(e)}), 500
 
+@api.route("/zoom/authorize", methods=["GET"])
+def zoom_authorize():
+    zoom_authorize_url = os.getenv("ZOOM_AUTHORIZE_URL")
+    client_id = os.getenv("ZOOM_CLIENT_ID")
+    redirect_uri = os.getenv("ZOOM_REDIRECT_URI")
+
+    # Construir la URL de autorización
+    auth_url = f"{zoom_authorize_url}?response_type=code&client_id={client_id}&redirect_uri={redirect_uri}"
+    return jsonify({"authorization_url": auth_url}), 200
+
+@api.route("/zoom/callback", methods=["GET"])
+def zoom_callback():
+    try:
+        # Obtener el código de autorización
+        code = request.args.get("code")
+        if not code:
+            return jsonify({"msg": "Authorization code not found"}), 400
+
+        # Variables necesarias
+        token_url = os.getenv("ZOOM_AUTH_URL")
+        client_id = os.getenv("ZOOM_CLIENT_ID")
+        client_secret = os.getenv("ZOOM_CLIENT_SECRET")
+        redirect_uri = os.getenv("ZOOM_REDIRECT_URI")
+
+        # Crear el payload para obtener el token
+        payload = {
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": redirect_uri,
+        }
+
+        # Crear los headers con autenticación básica
+        headers = {
+            "Authorization": f"{requests.auth._basic_auth_str(client_id, client_secret)}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+        print(f"Payload: {payload}")
+        print(f"Headers: {headers}")
+        print(f"Token URL: {token_url}")
+
+        # Realizar la solicitud al endpoint de Zoom
+        response = requests.post(token_url, data=payload, headers=headers)
+
+        # Si hay un error en la respuesta
+        if response.status_code != 200:
+            return jsonify({
+                "msg": "Failed to fetch access token",
+                "error": response.json()
+            }), response.status_code
+
+        # Procesar los tokens recibidos
+        tokens = response.json()
+        return jsonify({
+            "access_token": tokens.get("access_token"),
+            "refresh_token": tokens.get("refresh_token"),
+            "expires_in": tokens.get("expires_in")
+        }), 200
+
+    except Exception as e:
+        # Capturar y devolver cualquier error
+        return jsonify({"msg": "Internal Server Error", "error": str(e)}), 500
+
+
+@api.route("/zoom/create-meeting", methods=["POST"])
+def create_zoom_meeting():
+    body = request.get_json()
+    required_fields = ["topic", "start_time", "duration", "timezone"]
+    for field in required_fields:
+        if field not in body:
+            return jsonify({"msg": f"Missing field: {field}"}), 400
+
+    # Token (deberías manejarlo con una solución más segura)
+    access_token = body.get("access_token")  # O bien recuperarlo de un almacenamiento seguro
+
+    zoom_api_base_url = os.getenv("ZOOM_API_BASE_URL")
+    meeting_url = f"{zoom_api_base_url}/users/me/meetings"
+
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "topic": body["topic"],
+        "type": 2,  # Tipo de reunión programada
+        "start_time": body["start_time"],  # ISO 8601
+        "duration": body["duration"],  # Duración en minutos
+        "timezone": body["timezone"],
+        "settings": {
+            "host_video": True,
+            "participant_video": True,
+        },
+    }
+
+    response = requests.post(meeting_url, json=payload, headers=headers)
+    if response.status_code != 201:
+        return jsonify({"msg": "Failed to create meeting", "error": response.json()}), response.status_code
+
+    return jsonify(response.json()), 201
+
+
+@api.route("/zoom/refresh-token", methods=["POST"])
+def zoom_refresh_token():
+    body = request.get_json()
+    refresh_token = body.get("refresh_token")
+
+    if not refresh_token:
+        return jsonify({"msg": "Refresh token is required"}), 400
+
+    token_url = os.getenv("ZOOM_AUTH_URL")
+    client_id = os.getenv("ZOOM_CLIENT_ID")
+    client_secret = os.getenv("ZOOM_CLIENT_SECRET")
+
+    payload = {
+        "grant_type": "refresh_token",
+        "refresh_token": refresh_token,
+    }
+
+    headers = {
+        "Authorization": f"Basic {requests.auth._basic_auth_str(client_id, client_secret)}",
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+
+    response = requests.post(token_url, data=payload, headers=headers)
+    if response.status_code != 200:
+        return jsonify({"msg": "Failed to refresh token", "error": response.json()}), response.status_code
+
+    tokens = response.json()
+    return jsonify({"access_token": tokens.get("access_token"), "refresh_token": tokens.get("refresh_token")}), 200
+
+@api.route('/projects/<int:project_id>/meetings', methods=['GET'])
+@jwt_required()
+def get_project_meetings(project_id):
+    project = Project.query.get_or_404(project_id)
+    meetings = project.meetings  # Asumiendo que tienes una relación definida en el modelo
+    return jsonify([meeting.serialize() for meeting in meetings]), 200
+
+@api.route('/projects/<int:project_id>/meetings', methods=['POST'])
+@jwt_required()
+def create_project_meeting(project_id):
+    try:
+        user_id = int(get_jwt_identity())
+        project = Project.query.get_or_404(project_id)
+
+        # Verificar que el usuario tiene acceso al proyecto
+        if user_id != project.project_leader_id:
+            print(type(project.project_leader_id), type(user_id))
+            return jsonify({"msg": "No tienes permisos para crear reuniones en este proyecto"}), 403
+
+        body = request.get_json()
+        required_fields = ["topic", "start_time", "duration"]
+        for field in required_fields:
+            if field not in body:
+                return jsonify({"msg": f"Falta el campo: {field}"}), 400
+
+        # Crear reunión (usa el modelo que corresponda)
+        new_meeting = Meeting(
+            project_id=project_id,
+            user_id=user_id,
+            topic=body["topic"],
+            start_time=body["start_time"],
+            duration=body["duration"],
+            join_url=body.get("join_url", ""),
+            password=body.get("password", "")
+        )
+        db.session.add(new_meeting)
+        db.session.commit()
+
+        return jsonify({"msg": "Reunión creada exitosamente", "meeting": new_meeting.serialize()}), 201
+    except Exception as e:
+        return jsonify({"msg": str(e)}), 500
+
+
+
+
+# Registro del Blueprint en la aplicación Flask
+app.register_blueprint(api, url_prefix="/api")
