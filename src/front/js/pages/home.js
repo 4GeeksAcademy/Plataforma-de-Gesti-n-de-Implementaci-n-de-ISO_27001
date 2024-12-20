@@ -21,6 +21,9 @@ export const Home = () => {
             <section className="hero">
                 <div className="hero-content">
                     <h1 className="hero-title">
+                        CerBro 27001 <span className="highlight">Confianza</span>
+                    </h1>
+                    <h1 className="hero-title">
                         Gestiona la Seguridad de la Información con <span className="highlight">Confianza</span>
                     </h1>
                     <p className="hero-subtitle">
