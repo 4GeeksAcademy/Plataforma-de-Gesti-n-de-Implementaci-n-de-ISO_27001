@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import "../../styles/login.css";
+import Logo from "../../img/white-logo.png";
 
 export const Login = () => {
     const { actions } = useContext(Context);
@@ -29,37 +30,53 @@ export const Login = () => {
     };
 
     return (
-        <div className="login-container">
-            <div className="login-form">
-                <h1>Iniciar Sesión</h1>
-                {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Mostrar errores */}
-                <form onSubmit={handleLogin}>
-                    <div className="input-group">
-                        <i className="fas fa-envelope"></i>
-                        <input 
-                            type="email" 
-                            placeholder="Correo electrónico" 
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required 
-                        />
-                    </div>
-                    <div className="input-group">
-                        <i className="fas fa-lock"></i>
-                        <input 
-                            type="password" 
-                            placeholder="Contraseña" 
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required 
-                        />
-                    </div>
-                    <button type="submit" className="btn-login">Iniciar sesión</button>
-                    <p className="forgot-password" onClick={handleForgotPassword}>
-                        ¿Olvidaste tu contraseña? <a href="#">Recupérala aquí</a>
-                    </p>
-                </form>
+        <div className="big-div">
+            <div className="left-div">
+                <div className="left-div-logo text-center">
+                    <img className="white-logo" src={Logo} />
+                </div>
             </div>
+            <div className="right-div">
+                <div>
+                    <h1 className="h3-custom text-center p-4" style={{borderBottomRightRadius: "15px", borderBottomLeftRadius: "15px"}}>Inicio de Sesión</h1>
+                </div>
+                <div className="right-div-login-form">
+                    <div className="login-container">
+                        <div className="login-form">
+                        {errorMessage && <p className="error-message">{errorMessage}</p>} 
+                        <p className="text-center">Ingrese su correo registrado y contraseña</p>
+                        <form onSubmit={handleLogin}>
+                            <div className="input-group">
+                                <i className="fas fa-envelope"></i>
+                                <input 
+                                    type="email" 
+                                    placeholder="Correo electrónico" 
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required 
+                                />
+                            </div>
+                            <div className="input-group">
+                                <i className="fas fa-lock"></i>
+                                <input 
+                                    type="password" 
+                                    placeholder="Contraseña" 
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required 
+                                />
+                            </div>
+                            <button type="submit" className="btn-login">Iniciar sesión</button>
+                            <p className="forgot-password" onClick={handleForgotPassword}>
+                                ¿Olvidaste tu contraseña? <a href="#">Recupérala aquí</a>
+                            </p>
+                        </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
     );
 };
