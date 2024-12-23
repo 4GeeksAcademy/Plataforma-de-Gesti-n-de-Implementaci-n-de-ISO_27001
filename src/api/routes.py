@@ -119,7 +119,7 @@ def forgot_password():
             return jsonify({"msg": "El correo electrónico no está registrado"}), 404
         reset_token = create_access_token(identity=user.id, additional_claims={"Type": "Password"}, expires_delta=timedelta(minutes=15))
         # reset_url = f"https://literate-waffle-rrqp9gxq9wp259jx-3001.app.github.dev/api/reset-password/{reset_token}"
-        reset_url = f"https://ideal-goldfish-w9pg6746rp7hxpx-3000.app.github.dev/change-password/?token={reset_token}"
+        reset_url = f"https://potential-tribble-7g76gx9v77w3wprp-3000.app.github.dev/change-password/?token={reset_token}"
         msg = Message("CerBro - Recuperación de contraseña", recipients=[user.email])
         msg.body = f"Hola {user.full_name},\n\nHaz clic en el siguiente enlace para restablecer tu contraseña:\n{reset_url}\n\nEste enlace expira en 15 minutos."
         mail.send(msg)
@@ -996,7 +996,7 @@ def zoom_callback():
 
         
         # Redirigir a la aplicación con el token
-        frontend_url = os.getenv("FRONTEND_URL", "https://fantastic-happiness-4xq5xr7jg7x25797-3000.app.github.dev/")
+        frontend_url = os.getenv("FRONTEND_URL", "https://potential-tribble-7g76gx9v77w3wprp-3001.app.github.dev/")
         return redirect(f"{frontend_url}/zoom-authorized?access_token={access_token}")
     except Exception as e:
         return jsonify({"msg": "Internal Server Error", "error": str(e)}), 500
@@ -1128,9 +1128,6 @@ def get_zoom_access_token():
 
 
 
-# Registro del Blueprint en la aplicación Flask
-app.register_blueprint(api, url_prefix="/api")
-
 @api.route('/project/<int:project_id>/response/uploadfile', methods=['PUT'])
 @jwt_required()
 def upload_project_response_file(project_id):
@@ -1189,3 +1186,6 @@ def upload_project_response_file(project_id):
         print("Error al subir el archivo:", ex)
         return jsonify({"msg": "Error al subir el archivo"}), 500
 
+
+# Registro del Blueprint en la aplicación Flask
+app.register_blueprint(api, url_prefix="/api")

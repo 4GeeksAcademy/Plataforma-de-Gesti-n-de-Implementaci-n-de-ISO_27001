@@ -22,6 +22,8 @@ import { ChangePassword } from "./pages/changePassword";
 import { Profile } from "./pages/profile";
 import { Help } from "./pages/help";
 import { ZoomAuthorized } from "./pages/ZoomAuthorized";
+import TermsAndConditions from "./pages/TermsAndConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 
 //create your first component
@@ -54,6 +56,8 @@ const Layout = () => {
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/help" element={<Help />} />
                         <Route element={<h1>Not found!</h1>} />
+                        <Route element={<TermsAndConditions />} path="/terms" />
+                        <Route element={<PrivacyPolicy />} path="/privacy" />
                     </Routes>
                     <Footer />
                 </ScrollToTop>
