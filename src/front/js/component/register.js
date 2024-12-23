@@ -28,33 +28,35 @@ export const Register = () => {
         }
     }
     return (
-        <div className="container">
-            <div className="left-container">
-                <p className="text-center">
-                    <img className="left-container-logo" src={Logo} />
-                </p>
+        <div className="big-div">
+            <div className="left-div">
+                <div className="text-center left-div-logo">
+                    <img className="white-logo" src={Logo} />
+                </div>
             </div>
-            <div className="right-container">
-                <h1 className="text-center">Register Account</h1>
-                <form onSubmit={submitForm}>
-                    <div className="mb-3">
-                        <label htmlFor="full_name" className="form-label">Full Name</label>
-                        <input type="text" className="form-control" name="full_name" placeholder="Enter full name" required />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="email" className="form-label">Email Address</label>
-                        <input type="email" className="form-control" name="email" placeholder="Enter email" required />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="password" className="form-label">Password</label>
-                        <input type="password" className="form-control" name="password" placeholder="Enter password" required />
-                    </div>
-                    <div className="row justify-content-center mt-3">
-                        <div className="col-auto">
-                            <button type="submit" className="btn">Register Account</button>
+            <div className="right-div">
+                <h1 className="text-center h3-custom p-4" style={{borderBottomRightRadius: "15px", borderBottomLeftRadius: "15px"}}>Registro de Cuenta</h1>
+                <div className="custom-card-password">
+                    <form onSubmit={submitForm}>
+                        <div className="mb-3 text-start">
+                            <label htmlFor="full_name" className="form-label">Nombre Completo</label>
+                            <input type="text" className="form-control" name="full_name" placeholder="Escribe tu nombre completo aquí" required />
                         </div>
-                    </div>
-                </form>
+                        <div className="mb-3 text-start">
+                            <label htmlFor="email" className="form-label">Correo Electrónico</label>
+                            <input type="email" className="form-control" name="email" placeholder="Escribe tu correo electrónico aquí" required />
+                        </div>
+                        <div className="mb-3 text-start">
+                            <label htmlFor="password" className="form-label">Contraseña</label>
+                            <input type="password" className="form-control" name="password" placeholder="Escribe tu contraseña aquí" required />
+                        </div>
+                        <div className="row justify-content-center mt-3">
+                            <div className="col-auto">
+                                <button type="submit" className="btn" style={{width: "180px"}}>Registrar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     )

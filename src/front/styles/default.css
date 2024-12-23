@@ -1,0 +1,28 @@
+/* Contenedor principal que ocupa todo el espacio disponible */
+.container {
+    display: flex;
+    justify-content: center; /* Centra todo el contenido horizontalmente */
+    align-items: center;     /* Centra todo el contenido verticalmente */
+    height: 100vh;           /* Hace que el contenedor ocupe toda la altura de la ventana */
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Contenedor para el contenido (imagen y texto) */
+.content {
+    display: flex;
+    flex-direction: column;  /* Apila la imagen y el texto verticalmente */
+    justify-content: center;
+    align-items: center;
+    max-width: 80%;          /* Limita el ancho del contenedor para evitar que crezca demasiado */
+    text-align: center;      /* Centra el texto */
+    overflow: hidden;
+}
+
+/* Estilo de la imagen */
+.image {
+    max-width: 100%;         /* La imagen se adapta al contenedor */
+    height: auto;            /* Mantiene las proporciones */
+    margin-bottom: 20px;     /* Espacio entre la imagen y el texto */
+}
+

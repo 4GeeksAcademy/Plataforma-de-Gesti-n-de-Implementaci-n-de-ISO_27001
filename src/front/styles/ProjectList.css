@@ -1,6 +1,13 @@
 /* Fondo general del contenedor */
 /* ProjectList.css */
 
+.big-container-project-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .container {
   background-color: #F8F1E5;
   color: #1A2B40;
@@ -59,6 +66,12 @@
   flex: 1;
 }
 
+.main-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .project-item {
   background-color: #FFF;
   padding: 15px;
@@ -100,7 +113,7 @@
   background-color: #b94300;
 }
 .floating-add-button {
-  
+
   top: 20px;
   right: 20px;
   background: linear-gradient(135deg, #6381a5, #0D1B2A); /* Azul vibrante */

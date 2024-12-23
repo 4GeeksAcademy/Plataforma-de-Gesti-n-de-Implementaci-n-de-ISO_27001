@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 
@@ -13,8 +13,18 @@ import { Register} from "./component/register";
 import { ManageUsers } from "./component/manageUsers";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
-import {ProjectList} from "./pages/projectList";
-import {FormProject} from "./component/formProject";
+import { ProjectList } from "./pages/projectList";
+import { FormProject } from "./component/formProject";
+import { Sidebar } from "./component/sidebar";
+import { Main } from "./pages/main";
+import { ResetPassword } from  "./pages/resetPassword";
+import { ChangePassword } from "./pages/changePassword";
+import { Profile } from "./pages/profile";
+import { Help } from "./pages/help";
+import { ZoomAuthorized } from "./pages/ZoomAuthorized";
+import TermsAndConditions from "./pages/TermsAndConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+
 
 //create your first component
 const Layout = () => {
@@ -35,10 +45,19 @@ const Layout = () => {
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<Register />} path="/register"/>
+                        <Route element={<Main />} path="/main/*"/>
                         <Route element={<ManageUsers />} path="/manage/users"/>
                         <Route element={<ProjectList />} path ="/projectlist"/>
                         <Route element={<FormProject />} path="/addproject" />
+                        <Route element={<ResetPassword />} path="/reset-password"/>
+                        <Route element={<ChangePassword />} path="/change-password" />
+                        <Route element={<Main />} path="/main/:projectId/*" />
+                        <Route path="/zoom-authorized" element={<ZoomAuthorized />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/help" element={<Help />} />
                         <Route element={<h1>Not found!</h1>} />
+                        <Route element={<TermsAndConditions />} path="/terms" />
+                        <Route element={<PrivacyPolicy />} path="/privacy" />
                     </Routes>
                     <Footer />
                 </ScrollToTop>
