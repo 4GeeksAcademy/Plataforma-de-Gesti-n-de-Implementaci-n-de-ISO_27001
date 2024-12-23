@@ -28,6 +28,7 @@ export const ChangePassword = () => {
       setErrorMessage("");
     } else {
       setSuccessMessage("");
+      console.log(token);
       setErrorMessage("Hubo un error al cambiar la contraseña.");
     }
   };

@@ -17,7 +17,7 @@ export const Main = () => {
     const[rutas, setRutas] = useState([]);
     const [projectResponses, setProjectResponses] = useState([]);
     const [isRolesVisible, setIsRolesVisible] = useState(false);
-    const [isProjectLeader, setIsProjectLeader] = useState(false);
+    const [isProjectLeader, setIsProjectLeader] = useState(true);
     const [isMeetingsVisible, setIsMeetingsVisible] = useState(false);
    
 
@@ -98,17 +98,22 @@ export const Main = () => {
             {/* Componente de gestión de roles en la parte derecha */}
             {/* Renderizar solo si es el jefe del proyecto */}
             {isProjectLeader && (
-                <>
-                    <button
-                        onClick={() => setIsRolesVisible(!isRolesVisible)}
-                        className="floating-button"
-                    >
-                        {isRolesVisible
-                            ? "Ocultar Gestión de Usuarios y Roles"
-                            : "Mostrar Gestión de Usuarios y Roles"}
-                    </button>
+                 <>
+                 <button
+                     onClick={() => setIsRolesVisible(!isRolesVisible)}
+                     className="floating-button"
+                 >
+                     {isRolesVisible
+                         ? "Ocultar Gestión de Usuarios y Roles"
+                         : "Mostrar Gestión de Usuarios y Roles"}
+                 </button>
 
-                </>
+                 {isRolesVisible && (
+                     <div className="floating-container">
+                         <ManageProjectRoles projectId={projectId} />
+                     </div>
+                 )}
+             </>
             )}
             {/* Botón de reuniones */}
             {isProjectLeader && (
